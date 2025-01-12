@@ -39,7 +39,6 @@ export default function VideoPlayer({
     const channel = supabase
       .channel(`room:${roomId}:updates`)
       .on('broadcast', { event: 'playback-state' }, async ({ payload }) => {
-        console.log({ payload })
         setIsPlaying(payload.isPlaying)
       })
       .on(
