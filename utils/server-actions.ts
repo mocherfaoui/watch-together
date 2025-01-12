@@ -11,13 +11,18 @@ export const handleCreateRoom = async (formData: FormData) => {
 
   const userName = formData.get('username') as string
 
-  const { data: roomData } = await supabase
+  const { data: roomData, error } = await supabase
     .from('room')
     .insert({
       video_url: formData.get('video_url') as string
     })
     .select()
     .single()
+
+  if (error) {
+    console.log('room data', roomData)
+    console.error('error creating a room', error)
+  }
 
   await getOrCreateRoomProfile({ roomId: roomData!.id, userName, isHost: true })
 
