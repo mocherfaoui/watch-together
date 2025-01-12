@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "update-types": "npx supabase gen types --lang=typescript --project-id \"$PROJECT_REF\" > types.supabase.ts"
   },
   "dependencies": {
     "@github/relative-time-element": "^4.4.4",
