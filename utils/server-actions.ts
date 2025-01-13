@@ -6,18 +6,38 @@ import { revalidatePath } from 'next/cache'
 import { Tables } from '@/types/supabase'
 import { BroadcastMessage } from '@/types'
 
+async function getCurrentUser() {
+  const supabase = await createClient()
+  const {
+    data: { user: currentUser }
+  } = await supabase.auth.getUser()
+
+  const authUser =
+    currentUser ??
+    (await (async () => {
+      const {
+        data: { user }
+      } = await supabase.auth.signInAnonymously()
+      return user
+    })())
+
+  return authUser
+}
+
 export const handleCreateRoom = async (
   _formState: null,
   formData: FormData
 ) => {
   const supabase = await createClient()
 
+  const currentUser = await getCurrentUser()
   const userName = formData.get('username') as string
 
   const { data: roomData } = await supabase
     .from('room')
     .insert({
-      video_url: formData.get('video_url') as string
+      video_url: formData.get('video_url') as string,
+      host_id: currentUser?.id
     })
     .select()
     .single()
@@ -25,7 +45,8 @@ export const handleCreateRoom = async (
   await upsertRoomProfile({
     roomId: roomData!.id,
     userName,
-    isHost: true
+    isHost: true,
+    hostId: currentUser?.id
   })
 
   redirect(`/room/${roomData!.id}`)
@@ -46,33 +67,22 @@ export async function revalidatePathOnServer(path: string) {
 export async function upsertRoomProfile({
   roomId,
   userName,
-  isHost
+  isHost,
+  hostId
 }: {
   roomId: string
   userName: string
   isHost: boolean
+  hostId: string | undefined
 }) {
   const supabase = await createClient()
-
-  const {
-    data: { user: currentUser }
-  } = await supabase.auth.getUser()
-
-  const authUser =
-    currentUser ??
-    (await (async () => {
-      const {
-        data: { user }
-      } = await supabase.auth.signInAnonymously()
-      return user
-    })())
 
   const { data: profile, error } = await supabase
     .from('user')
     .upsert(
       {
         name: userName,
-        auth_id: authUser?.id ?? '',
+        auth_id: hostId ?? '',
         room_id: roomId,
         is_host: isHost
       },
@@ -142,10 +152,13 @@ export const sendNewUserMessage = async (
 ) => {
   const supabase = await createClient()
 
+  const currentUser = await getCurrentUser()
+
   const newRoomProfile = await upsertRoomProfile({
     roomId: newMessage.room_id,
     userName,
-    isHost: false
+    isHost: false,
+    hostId: currentUser?.id
   })
 
   const { error } = await supabase
@@ -211,4 +224,14 @@ export async function updateUserName(
     message: '',
     payload: newUserName
   }
+}
+
+export async function deleteRoom(roomId: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase.from('room').delete().eq('id', roomId)
+  if (error) {
+    return { error: 'an error occured, please try again' }
+  }
+  redirect('/')
 }

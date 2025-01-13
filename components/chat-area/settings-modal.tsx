@@ -1,17 +1,6 @@
 import { useActionState, useState } from 'react'
 import { Button } from '../ui/button'
 import { Loader2, Settings } from 'lucide-react'
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '../ui/alert-dialog'
 import { Input } from '../ui/input'
 import {
   Sheet,
@@ -23,6 +12,7 @@ import {
 import { Label } from '../ui/label'
 import { Tables } from '@/types/supabase'
 import { updateUserName } from '@/utils/server-actions'
+import DeleteRoomAlert from './delete-room-alert'
 
 type FormState = {
   message: string
@@ -30,7 +20,7 @@ type FormState = {
 }
 
 const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
-  const { name: userName, is_host: isHost } = roomProfile ?? {}
+  const { name: userName, is_host: isHost, room_id: roomId } = roomProfile
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [alertDialogOpen, setAlertDialogOpen] = useState(false)
   const [
@@ -121,23 +111,11 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
           </div>
         </SheetContent>
       </Sheet>
-      <AlertDialog open={alertDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this
-              room with all sent messages.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setAlertDialogOpen(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteRoomAlert
+        alertDialogOpen={alertDialogOpen}
+        setAlertDialogOpen={setAlertDialogOpen}
+        roomId={roomId}
+      />
     </>
   )
 }
