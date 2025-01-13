@@ -7,7 +7,7 @@ import { sendMessage, sendNewUserMessage } from '@/utils/server-actions'
 import { generateUUID } from '@/utils'
 import { Tables } from '@/types/supabase'
 
-type ComponentType = {
+type ComponentProps = {
   roomProfile: Tables<'user'> | null
   roomId: string
   addOptimisticMessages: (action: object) => void
@@ -23,7 +23,7 @@ export default function SendMessageForm({
   roomProfile,
   roomId,
   addOptimisticMessages
-}: ComponentType) {
+}: ComponentProps) {
   const [formState, setFormState] = useState(initialState)
 
   const formRef = useRef<HTMLFormElement>(null)

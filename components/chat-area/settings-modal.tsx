@@ -15,7 +15,7 @@ import { updateUserName } from '@/utils/server-actions'
 import DeleteRoomAlert from './delete-room-alert'
 
 type FormState = {
-  message: string
+  error: string
   payload: string
 }
 
@@ -28,7 +28,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
     updateUserNameFormAction,
     isUpdatingUserName
   ] = useActionState(handleUpdateUserName, {
-    message: '',
+    error: '',
     payload: userName as string
   })
 
@@ -69,9 +69,9 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
                 action={updateUserNameFormAction}
               >
                 <Label htmlFor='new_username'>Current Username</Label>
-                {updateUserNameFormState?.message && (
+                {updateUserNameFormState?.error && (
                   <p className='text-base md:text-sm text-destructive'>
-                    {updateUserNameFormState?.message}
+                    {updateUserNameFormState?.error}
                   </p>
                 )}
                 <div className='flex items-center gap-2'>

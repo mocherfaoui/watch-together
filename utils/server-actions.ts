@@ -201,7 +201,7 @@ export async function updateUserName(
 
   if (alreadyUsed?.name) {
     return {
-      message: 'username already used',
+      error: 'username already used',
       payload: newUserName
     }
   }
@@ -213,7 +213,7 @@ export async function updateUserName(
 
   if (error) {
     return {
-      message: 'an error occured, please try again',
+      error: 'an error occured, please try again',
       payload: newUserName
     }
   }
@@ -221,7 +221,7 @@ export async function updateUserName(
   revalidatePath(`/room/${roomProfile.room_id}/@chatarea`)
 
   return {
-    message: '',
+    error: '',
     payload: newUserName
   }
 }
