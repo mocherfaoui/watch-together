@@ -23,11 +23,23 @@ export default function Home() {
         <div className='flex flex-col gap-3'>
           <div className='flex flex-col gap-2 flex-1'>
             <Label htmlFor='video_url'>Video URL</Label>
-            <Input type='url' placeholder='' name='video_url' id='video_url' />
+            <Input
+              type='url'
+              placeholder=''
+              name='video_url'
+              id='video_url'
+              required={true}
+            />
           </div>
           <div className='flex flex-col gap-2 flex-1'>
             <Label htmlFor='username'>Username</Label>
-            <Input type='text' placeholder='' name='username' id='username' />
+            <Input
+              type='text'
+              placeholder=''
+              name='username'
+              id='username'
+              required={true}
+            />
           </div>
         </div>
 
