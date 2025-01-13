@@ -13,16 +13,18 @@ type ComponentType = {
   addOptimisticMessages: (action: object) => void
 }
 
+const initialState = {
+  userName: '',
+  messageContent: '',
+  error: ''
+}
+
 export default function SendMessageForm({
   roomProfile,
   roomId,
   addOptimisticMessages
 }: ComponentType) {
-  const [formState, setFormState] = useState({
-    userName: '',
-    messageContent: '',
-    error: ''
-  })
+  const [formState, setFormState] = useState(initialState)
 
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -86,7 +88,7 @@ export default function SendMessageForm({
       })}
       onSubmit={(event) => {
         event.preventDefault()
-        setFormState({ ...formState, messageContent: '', error: '' })
+        setFormState(initialState)
         startTransition(async () => {
           await newSendMessage()
         })

@@ -52,6 +52,7 @@ export default function ChatArea({
   }, [])
 
   useEffect(() => {
+    if (!roomProfile) return
     const supabase = createClient()
     const channel = supabase
       .channel(`room:${roomId}:messages`)
@@ -69,7 +70,7 @@ export default function ChatArea({
       supabase.removeChannel(channel)
     }
     // eslint-disable-next-line
-  }, [])
+  }, [roomProfile])
 
   return (
     <>
