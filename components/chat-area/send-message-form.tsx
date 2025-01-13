@@ -8,7 +8,7 @@ import { generateUUID } from '@/utils'
 import { Tables } from '@/types/supabase'
 
 type ComponentProps = {
-  roomProfile: Tables<'user'> | null
+  roomProfile: Tables<'user'>
   roomId: string
   addOptimisticMessages: (action: object) => void
 }
@@ -28,23 +28,28 @@ export default function SendMessageForm({
 
   const formRef = useRef<HTMLFormElement>(null)
 
-  async function newSendMessage() {
+  async function handleSendMessage() {
     const { messageContent, userName } = formState
 
-    if (!roomProfile) {
+    if (!roomProfile.name) {
       const newMessage = {
+        id: generateUUID(),
         content: messageContent,
         room_id: roomId,
-        sent_at: new Date().toISOString()
+        sent_at: new Date().toISOString(),
+        sender: roomProfile.id
       }
 
       addOptimisticMessages({
         ...newMessage,
-        id: generateUUID(),
         sender: { name: userName }
       })
 
-      const submittedForm = await sendNewUserMessage(newMessage, userName)
+      const submittedForm = await sendNewUserMessage(
+        newMessage,
+        userName,
+        roomProfile
+      )
       if (submittedForm?.error) {
         setFormState({
           userName,
@@ -56,6 +61,7 @@ export default function SendMessageForm({
     }
 
     const newMessage = {
+      id: generateUUID(),
       content: formState.messageContent,
       sender: roomProfile.id,
       room_id: roomId,
@@ -64,7 +70,6 @@ export default function SendMessageForm({
 
     addOptimisticMessages({
       ...newMessage,
-      id: generateUUID(),
       sender: { name: roomProfile.name }
     })
 
@@ -90,7 +95,7 @@ export default function SendMessageForm({
         event.preventDefault()
         setFormState(initialState)
         startTransition(async () => {
-          await newSendMessage()
+          await handleSendMessage()
         })
       }}
     >
@@ -100,7 +105,7 @@ export default function SendMessageForm({
         </p>
       )}
       <div className='flex gap-2'>
-        {!roomProfile && (
+        {!roomProfile.name && (
           <Input
             type='text'
             name='username'

@@ -19,7 +19,7 @@ export type BroadcastMessage = {
   room: string
   event: 'new-message' | 'playback-state'
   payload:
-    | (NonNullableKeys<Omit<Tables<'message'>, 'id' | 'sender'>> & {
+    | (NonNullableKeys<Omit<Tables<'message'>, 'sender'>> & {
         sender: Tables<'user'>
       })
     | { isPlaying: boolean }

@@ -120,7 +120,7 @@ export const broadcastMessage = async ({
 }
 
 export const sendMessage = async (
-  newMessage: Omit<Tables<'message'>, 'id'>,
+  newMessage: Tables<'message'>,
   roomProfile: Tables<'user'>
 ) => {
   const supabase = await createClient()
@@ -147,23 +147,18 @@ export const sendMessage = async (
 }
 
 export const sendNewUserMessage = async (
-  newMessage: Omit<Tables<'message'>, 'id' | 'sender'>,
-  userName: string
+  newMessage: Tables<'message'>,
+  userName: string,
+  roomProfile: Tables<'user'>
 ) => {
   const supabase = await createClient()
 
-  const currentUser = await getCurrentUser()
+  await supabase
+    .from('user')
+    .update({ name: userName })
+    .eq('id', roomProfile.id)
 
-  const newRoomProfile = await upsertRoomProfile({
-    roomId: newMessage.room_id,
-    userName,
-    isHost: false,
-    hostId: currentUser?.id
-  })
-
-  const { error } = await supabase
-    .from('message')
-    .insert({ ...newMessage, sender: newRoomProfile?.id })
+  const { error } = await supabase.from('message').insert(newMessage)
 
   if (error) {
     return {
@@ -180,7 +175,7 @@ export const sendNewUserMessage = async (
     event: 'new-message',
     payload: {
       ...newMessage,
-      sender: newRoomProfile
+      sender: { ...roomProfile, name: userName }
     }
   })
   revalidatePath(`/room/${newMessage.room_id}/@chatarea`)

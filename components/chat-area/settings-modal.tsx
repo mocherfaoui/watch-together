@@ -53,7 +53,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
       </Button>
       <Sheet open={isModalOpen} onOpenChange={() => setIsModalOpen(false)}>
         <SheetContent>
-          <SheetHeader>
+          <SheetHeader className='text-left'>
             <SheetTitle className='text-xl'>Room Settings</SheetTitle>
             <SheetDescription>
               Update your username and manage your room settings.
@@ -78,7 +78,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
                   <Input
                     type='text'
                     required={true}
-                    defaultValue={updateUserNameFormState.payload}
+                    defaultValue={updateUserNameFormState.payload || userName}
                     placeholder='New username'
                     name='new_username'
                     id='new_username'

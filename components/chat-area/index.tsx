@@ -14,7 +14,6 @@ import { revalidatePathOnServer } from '@/utils/server-actions'
 import MessageTimestamp from './message-timestamp'
 import { ModifiedMessageType } from '@/types'
 import SettingsModal from './settings-modal'
-import { generateUUID } from '@/utils'
 import SendMessageForm from './send-message-form'
 
 export default function ChatArea({
@@ -22,7 +21,7 @@ export default function ChatArea({
   messages,
   roomId
 }: {
-  roomProfile: Tables<'user'> | null
+  roomProfile: Tables<'user'>
   messages: ModifiedMessageType
   roomId: string
 }) {
@@ -52,15 +51,14 @@ export default function ChatArea({
   }, [])
 
   useEffect(() => {
-    if (!roomProfile) return
     const supabase = createClient()
     const channel = supabase
       .channel(`room:${roomId}:messages`)
       .on('broadcast', { event: 'new-message' }, async ({ payload }) => {
-        if (roomProfile?.id === payload?.sender?.id) return
+        if (roomProfile.id === payload?.sender?.id) return
 
         startTransition(() => {
-          addOptimisticMessages({ ...payload, id: generateUUID() })
+          addOptimisticMessages(payload)
         })
         await revalidatePathOnServer(`/room/${roomId}/@chatarea`)
       })
@@ -78,7 +76,7 @@ export default function ChatArea({
         <div className='flex flex-col h-full'>
           <div className='h-[61px] flex border-b border-gray-200 px-3 items-center justify-between'>
             <h3 className='text-base font-semibold uppercase'>Room Chat</h3>
-            {roomProfile && <SettingsModal roomProfile={roomProfile} />}
+            <SettingsModal roomProfile={roomProfile} />
           </div>
           <div className='relative flex flex-1'>
             <div

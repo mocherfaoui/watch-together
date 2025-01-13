@@ -1,4 +1,5 @@
 import ChatArea from '@/components/chat-area'
+import { upsertRoomProfile } from '@/utils/server-actions'
 import { createClient } from '@/utils/supabase/server'
 
 export default async function ChatAreaSlot({
@@ -21,12 +22,27 @@ export default async function ChatAreaSlot({
 
   const user = currentUser ?? (await getNewUser())
 
-  const { data: roomProfile } = await supabase
-    .from('user')
-    .select()
-    .eq('auth_id', user!.id)
-    .eq('room_id', roomId)
-    .single()
+  const getRoomProfile = async () => {
+    const { data: roomProfile } = await supabase
+      .from('user')
+      .select()
+      .eq('auth_id', user!.id)
+      .eq('room_id', roomId)
+      .single()
+
+    if (roomProfile) return roomProfile
+
+    const newRoomProfile = await upsertRoomProfile({
+      roomId,
+      userName: '',
+      isHost: false,
+      hostId: currentUser?.id
+    })
+
+    return newRoomProfile
+  }
+
+  const roomProfile = await getRoomProfile()
 
   const { data: messages } = await supabase
     .from('message')
