@@ -11,7 +11,7 @@ export const handleCreateRoom = async (formData: FormData) => {
 
   const userName = formData.get('username') as string
 
-  const { data: roomData, error } = await supabase
+  const { data: roomData } = await supabase
     .from('room')
     .insert({
       video_url: formData.get('video_url') as string
@@ -19,12 +19,11 @@ export const handleCreateRoom = async (formData: FormData) => {
     .select()
     .single()
 
-  if (error) {
-    console.log('room data', roomData)
-    console.error('error creating a room', error)
-  }
-
-  await getOrCreateRoomProfile({ roomId: roomData!.id, userName, isHost: true })
+  await upsertRoomProfile({
+    roomId: roomData!.id,
+    userName,
+    isHost: true
+  })
 
   redirect(`/room/${roomData!.id}`)
 }
@@ -41,7 +40,7 @@ export async function revalidatePathOnServer(path: string) {
   revalidatePath(path)
 }
 
-export async function getOrCreateRoomProfile({
+export async function upsertRoomProfile({
   roomId,
   userName,
   isHost
@@ -111,12 +110,6 @@ export const sendMessage = async (
   newMessage: Omit<Tables<'message'>, 'id'>,
   roomProfile: Tables<'user'>
 ) => {
-  /* return {
-    error: 'an error occured, please try again',
-    payload: {
-      messageContent: newMessage.content
-    }
-  } */
   const supabase = await createClient()
 
   const { error } = await supabase.from('message').insert(newMessage)
@@ -146,7 +139,7 @@ export const sendNewUserMessage = async (
 ) => {
   const supabase = await createClient()
 
-  const newRoomProfile = await getOrCreateRoomProfile({
+  const newRoomProfile = await upsertRoomProfile({
     roomId: newMessage.room_id,
     userName,
     isHost: false
