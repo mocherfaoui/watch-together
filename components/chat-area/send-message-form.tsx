@@ -1,4 +1,4 @@
-import { startTransition, useRef, useState } from 'react'
+import { startTransition, useOptimistic, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
@@ -25,6 +25,11 @@ export default function SendMessageForm({
   addOptimisticMessages
 }: ComponentProps) {
   const [formState, setFormState] = useState(initialState)
+  const [optimisticRoomProfile, updateOptimisticRoomProfile] = useOptimistic<
+    Tables<'user'>,
+    { name: string }
+  >(roomProfile, (currentState, newState) => ({ ...currentState, ...newState }))
+  const { name: currentUserName } = optimisticRoomProfile
 
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -40,6 +45,7 @@ export default function SendMessageForm({
         sender: roomProfile.id
       }
 
+      updateOptimisticRoomProfile({ name: userName })
       addOptimisticMessages({
         ...newMessage,
         sender: { name: userName }
@@ -105,7 +111,7 @@ export default function SendMessageForm({
         </p>
       )}
       <div className='flex gap-2'>
-        {!roomProfile.name && (
+        {!currentUserName && (
           <Input
             type='text'
             name='username'
