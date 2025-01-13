@@ -6,7 +6,10 @@ import { revalidatePath } from 'next/cache'
 import { Tables } from '@/types/supabase'
 import { BroadcastMessage } from '@/types'
 
-export const handleCreateRoom = async (formData: FormData) => {
+export const handleCreateRoom = async (
+  _formState: null,
+  formData: FormData
+) => {
   const supabase = await createClient()
 
   const userName = formData.get('username') as string
