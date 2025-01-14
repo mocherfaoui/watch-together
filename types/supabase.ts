@@ -70,15 +70,7 @@ export type Database = {
           updated_at?: string
           video_url?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "room_host_id_fkey"
-            columns: ["host_id"]
-            isOneToOne: false
-            referencedRelation: "user"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       user: {
         Row: {
