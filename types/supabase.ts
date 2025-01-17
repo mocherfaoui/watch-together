@@ -51,26 +51,46 @@ export type Database = {
       room: {
         Row: {
           created_at: string
+          current_streamer_id: string | null
           host_id: string | null
           id: string
+          is_streaming: boolean
+          stream_id: string | null
+          stream_output: string | null
           updated_at: string
           video_url: string
         }
         Insert: {
           created_at?: string
+          current_streamer_id?: string | null
           host_id?: string | null
           id?: string
+          is_streaming?: boolean
+          stream_id?: string | null
+          stream_output?: string | null
           updated_at?: string
           video_url: string
         }
         Update: {
           created_at?: string
+          current_streamer_id?: string | null
           host_id?: string | null
           id?: string
+          is_streaming?: boolean
+          stream_id?: string | null
+          stream_output?: string | null
           updated_at?: string
           video_url?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "room_current_streamer_id_fkey"
+            columns: ["current_streamer_id"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user: {
         Row: {
