@@ -6,43 +6,42 @@ import { revalidatePath } from 'next/cache'
 import { Tables } from '@/types/supabase'
 import { BroadcastMessage } from '@/types'
 
-async function getCurrentUser() {
-  const supabase = await createClient()
-  const {
-    data: { user: currentUser }
-  } = await supabase.auth.getUser()
-
-  const authUser =
-    currentUser ??
-    (await (async () => {
-      const {
-        data: { user }
-      } = await supabase.auth.signInAnonymously()
-      return user
-    })())
-
-  return authUser
-}
-
 export const handleCreateRoom = async (
   _formState: null,
   formData: FormData
 ) => {
   const supabase = await createClient()
 
-  const currentUser = await getCurrentUser()
+  const {
+    data: { user: currentUser }
+  } = await supabase.auth.getUser()
+
   const userName = formData.get('username') as string
+
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/stream/live_inputs`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.CLOUDFLARE_STREAM_TOKEN}`
+      }
+    }
+  )
+  const cloudflareResponse = await response.json()
 
   const { data: roomData } = await supabase
     .from('room')
     .insert({
       video_url: formData.get('video_url') as string,
-      host_id: currentUser?.id
+      host_id: currentUser?.id,
+      stream_id: cloudflareResponse?.result.uid ?? '',
+      stream_output: cloudflareResponse?.result.webRTCPlayback.url ?? '',
+      stream_input: cloudflareResponse?.result.webRTC.url ?? ''
     })
     .select()
     .single()
 
-  await upsertRoomProfile({
+  await createRoomProfile({
     roomId: roomData!.id,
     userName,
     isHost: true,
@@ -52,19 +51,28 @@ export const handleCreateRoom = async (
   redirect(`/room/${roomData!.id}`)
 }
 
-export const updateRoomVideo = async (videoUrl: string, roomId: string) => {
+export const updateRoom = async (
+  roomId: string,
+  payload: Partial<Tables<'room'>>
+) => {
   const supabase = await createClient()
 
-  await supabase.from('room').update({ video_url: videoUrl }).eq('id', roomId)
+  await supabase.from('room').update(payload).eq('id', roomId)
 
-  revalidatePath(`/room/${roomId!}/@videoplayer`)
+  await broadcastMessage({
+    event: 'room-updates',
+    room: `room:${roomId}:updates`,
+    payload
+  })
+
+  revalidatePath(`/room/${roomId}`)
 }
 
 export async function revalidatePathOnServer(path: string) {
   revalidatePath(path)
 }
 
-export async function upsertRoomProfile({
+export async function createRoomProfile({
   roomId,
   userName,
   isHost,
@@ -79,18 +87,12 @@ export async function upsertRoomProfile({
 
   const { data: profile, error } = await supabase
     .from('user')
-    .upsert(
-      {
-        name: userName,
-        auth_id: hostId ?? '',
-        room_id: roomId,
-        is_host: isHost
-      },
-      {
-        onConflict: 'auth_id,room_id',
-        ignoreDuplicates: false
-      }
-    )
+    .insert({
+      name: userName,
+      auth_id: hostId ?? '',
+      room_id: roomId,
+      is_host: isHost
+    })
     .select()
     .single()
 
@@ -143,7 +145,7 @@ export const sendMessage = async (
       sender: roomProfile
     }
   })
-  revalidatePath(`/room/${newMessage.room_id}/@chatarea`)
+  revalidatePath(`/room/${newMessage.room_id}`)
 }
 
 export const sendNewUserMessage = async (
@@ -178,7 +180,7 @@ export const sendNewUserMessage = async (
       sender: { ...roomProfile, name: userName }
     }
   })
-  revalidatePath(`/room/${newMessage.room_id}/@chatarea`)
+  revalidatePath(`/room/${newMessage.room_id}`)
 }
 
 export async function updateUserName(
@@ -213,7 +215,7 @@ export async function updateUserName(
     }
   }
 
-  revalidatePath(`/room/${roomProfile.room_id}/@chatarea`)
+  revalidatePath(`/room/${roomProfile.room_id}`)
 
   return {
     error: '',
@@ -224,9 +226,46 @@ export async function updateUserName(
 export async function deleteRoom(roomId: string) {
   const supabase = await createClient()
 
-  const { error } = await supabase.from('room').delete().eq('id', roomId)
+  const { data, error } = await supabase
+    .from('room')
+    .delete()
+    .eq('id', roomId)
+    .select()
+    .single()
+
   if (error) {
     return { error: 'an error occured, please try again' }
   }
+
+  await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/stream/live_inputs/${data.stream_id}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${process.env.CLOUDFLARE_STREAM_TOKEN}`
+      }
+    }
+  )
   redirect('/')
+}
+
+async function getCloudflareStream(liveInputId: string | null) {
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/stream/live_inputs/${liveInputId}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${process.env.CLOUDFLARE_STREAM_TOKEN}`
+      }
+    }
+  )
+  const data = await response.json()
+  return data
+}
+
+export async function checkLiveStreamConnectionStatus(
+  liveInputId: string | null
+) {
+  const data = await getCloudflareStream(liveInputId)
+  return data.result?.status.current.state === 'connected'
 }

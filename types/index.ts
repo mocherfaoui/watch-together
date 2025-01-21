@@ -17,10 +17,13 @@ export type ModifiedMessageType =
 
 export type BroadcastMessage = {
   room: string
-  event: 'new-message' | 'playback-state'
+  event: 'new-message' | 'playback-state' | 'room-updates'
   payload:
     | (NonNullableKeys<Omit<Tables<'message'>, 'sender'>> & {
         sender: Tables<'user'>
       })
     | { isPlaying: boolean }
+    | Partial<Tables<'room'>>
 }
+
+export type StreamState = 'streaming' | 'not started'
