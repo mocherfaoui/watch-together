@@ -158,6 +158,26 @@ export default function VideoPlayer({
     }
   }
 
+  const stopScreenSharing = async () => {
+    const tracks = (
+      videoStreamRef.current?.srcObject as MediaStream
+    )?.getTracks()
+
+    if (tracks?.length) {
+      tracks.forEach((track: MediaStreamTrack) => track.stop())
+      if (videoStreamRef.current) {
+        videoStreamRef.current.srcObject = null
+      }
+    }
+    setStreamState('not started')
+    const newRoomState = {
+      is_streaming: false,
+      current_streamer_id: null
+    }
+    startTransition(() => addOptimisticRoomData(newRoomState))
+    await updateRoom(roomId, newRoomState)
+  }
+
   return (
     <div className='flex flex-col flex-1'>
       <div className='flex gap-2 border-b border-gray-200 p-3'>
@@ -178,28 +198,7 @@ export default function VideoPlayer({
           </Button>
         )}
         {isCurrentUserStreaming && (
-          <Button
-            variant='destructive'
-            onClick={async () => {
-              const tracks = (
-                videoStreamRef.current?.srcObject as MediaStream
-              )?.getTracks()
-
-              if (tracks?.length) {
-                tracks.forEach((track: MediaStreamTrack) => track.stop())
-                if (videoStreamRef.current) {
-                  videoStreamRef.current.srcObject = null
-                }
-              }
-              setStreamState('not started')
-              const newRoomState = {
-                is_streaming: false,
-                current_streamer_id: null
-              }
-              startTransition(() => addOptimisticRoomData(newRoomState))
-              await updateRoom(roomId, newRoomState)
-            }}
-          >
+          <Button variant='destructive' onClick={stopScreenSharing}>
             <ScreenShareOff />
             <span>Stop Sharing Screen</span>
           </Button>
