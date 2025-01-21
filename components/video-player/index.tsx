@@ -172,7 +172,7 @@ export default function VideoPlayer({
           />
         </form>
         {['not started', 'loading'].includes(streamState) && (
-          <Button size='icon' onClick={startStream} className='hidden lg:block'>
+          <Button size='icon' onClick={startStream} className='hidden lg:flex'>
             <ScreenShare />
           </Button>
         )}
