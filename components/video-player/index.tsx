@@ -123,8 +123,8 @@ export default function VideoPlayer({
         video: true,
         audio: true,
         // @ts-expect-error // no typescript support for the options below as they are still experimental
-        surfaceSwitching: 'exlude',
-        selfBrowserSurface: 'exlude'
+        surfaceSwitching: 'exclude',
+        selfBrowserSurface: 'exclude'
       })
 
       if (videoStreamRef.current) {
