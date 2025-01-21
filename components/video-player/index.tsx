@@ -172,13 +172,13 @@ export default function VideoPlayer({
           />
         </form>
         {['not started', 'loading'].includes(streamState) && (
-          <Button size='icon' onClick={startStream} className='hidden lg:flex'>
+          <Button onClick={startStream} className='hidden lg:flex'>
             <ScreenShare />
+            <span>Share Screen</span>
           </Button>
         )}
         {isCurrentUserStreaming && (
           <Button
-            size='icon'
             variant='destructive'
             onClick={async () => {
               const tracks = (
@@ -201,6 +201,7 @@ export default function VideoPlayer({
             }}
           >
             <ScreenShareOff />
+            <span>Stop Sharing Screen</span>
           </Button>
         )}
       </div>
