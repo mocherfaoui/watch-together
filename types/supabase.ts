@@ -56,6 +56,7 @@ export type Database = {
           id: string
           is_streaming: boolean
           stream_id: string | null
+          stream_input: string | null
           stream_output: string | null
           updated_at: string
           video_url: string
@@ -67,6 +68,7 @@ export type Database = {
           id?: string
           is_streaming?: boolean
           stream_id?: string | null
+          stream_input?: string | null
           stream_output?: string | null
           updated_at?: string
           video_url: string
@@ -78,6 +80,7 @@ export type Database = {
           id?: string
           is_streaming?: boolean
           stream_id?: string | null
+          stream_input?: string | null
           stream_output?: string | null
           updated_at?: string
           video_url?: string
