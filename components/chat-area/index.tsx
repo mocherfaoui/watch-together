@@ -72,7 +72,7 @@ export default function ChatArea({
 
   return (
     <>
-      <div className='bg-white h-full w-full md:w-[40vw] lg:w-[25vw] md:border-l border-gray-200'>
+      <div className='bg-white h-full w-full md:w-[40vw] lg:w-[25vw] border-t md:border-l md:border-t-0 border-gray-200'>
         <div className='flex flex-col h-full'>
           <div className='h-[61px] flex border-b border-gray-200 px-3 items-center justify-between'>
             <h3 className='text-base font-semibold uppercase'>Room Chat</h3>
