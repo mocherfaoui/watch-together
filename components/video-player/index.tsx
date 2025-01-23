@@ -112,6 +112,31 @@ export default function VideoPlayer({
     return () => player.destroy()
   }, [isCurrentUserStreaming, streamState, streamOutput])
 
+  // when screen sharing is active, Chromium browsers display a native Stop sharing
+  // button that stops the media stream and fires an inactive event. there is no way
+  // to customise the behaviour of that button. I need to do some cleanup after stream
+  // ends so this is an escape hatch for now.
+  useEffect(() => {
+    if (!videoStreamRef.current?.srcObject) return
+
+    const handleStreamEnd = async () => {
+      setStreamState('not started')
+      const newRoomState = {
+        is_streaming: false,
+        current_streamer_id: null
+      }
+      startTransition(() => addOptimisticRoomData(newRoomState))
+      await updateRoom(roomId, newRoomState)
+    }
+
+    const stream = videoStreamRef.current?.srcObject as MediaStream
+    stream.addEventListener('inactive', handleStreamEnd)
+
+    return () => {
+      stream.removeEventListener('inactive', handleStreamEnd)
+    }
+  }, [videoStreamRef.current?.srcObject, addOptimisticRoomData, roomId])
+
   const startStream = async () => {
     setStreamState('loading')
     try {
