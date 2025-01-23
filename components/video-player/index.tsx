@@ -17,7 +17,7 @@ import {
 import { Input } from '../ui/input'
 import dynamic from 'next/dynamic'
 import { Button } from '../ui/button'
-import { ScreenShare, ScreenShareOff } from 'lucide-react'
+import { Loader2, ScreenShare, ScreenShareOff } from 'lucide-react'
 import { WHIPClient } from '@eyevinn/whip-web-client'
 import { cn } from '@/lib/utils'
 import { StreamState } from '@/types'
@@ -93,7 +93,7 @@ export default function VideoPlayer({
 
   useEffect(() => {
     if (
-      streamState === 'not started' ||
+      ['not started', 'loading'].includes(streamState) ||
       !videoStreamRef.current ||
       isCurrentUserStreaming
     )
@@ -113,6 +113,7 @@ export default function VideoPlayer({
   }, [isCurrentUserStreaming, streamState, streamOutput])
 
   const startStream = async () => {
+    setStreamState('loading')
     try {
       const client = new WHIPClient({
         endpoint: roomData.stream_input ?? '',
@@ -192,7 +193,12 @@ export default function VideoPlayer({
           />
         </form>
         {['not started', 'loading'].includes(streamState) && (
-          <Button onClick={startStream} className='hidden lg:flex'>
+          <Button
+            onClick={startStream}
+            className='hidden lg:flex'
+            disabled={streamState === 'loading'}
+          >
+            {streamState === 'loading' && <Loader2 className='animate-spin' />}
             <ScreenShare />
             <span>Share Screen</span>
           </Button>
@@ -220,10 +226,15 @@ export default function VideoPlayer({
             className='min-w-full min-h-full w-auto h-auto'
           />
         </div>
+        {streamState === 'loading' && (
+          <div className='flex justify-center items-center h-full'>
+            <p className='text-lg'>Setting up the stream...</p>
+          </div>
+        )}
         <div
           className={cn({
             'relative h-full': true,
-            hidden: streamState === 'streaming'
+            hidden: ['streaming', 'loading'].includes(streamState)
           })}
         >
           <ReactPlayer

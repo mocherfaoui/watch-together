@@ -26,4 +26,4 @@ export type BroadcastMessage = {
     | Partial<Tables<'room'>>
 }
 
-export type StreamState = 'streaming' | 'not started'
+export type StreamState = 'streaming' | 'not started' | 'loading'
