@@ -57,6 +57,7 @@ export default function VideoPlayer({
     const videoUrl = formData.get('video_url') as string
     addOptimisticRoomData({ video_url: videoUrl })
     await updateRoom(roomId, { video_url: videoUrl })
+    umami.track('Room Video Updated')
   }
 
   useEffect(() => {
@@ -222,6 +223,7 @@ export default function VideoPlayer({
             onClick={startStream}
             className='hidden lg:flex'
             disabled={streamState === 'loading'}
+            data-umami-event='Start Share Screen button'
           >
             {streamState === 'loading' && <Loader2 className='animate-spin' />}
             <ScreenShare />
@@ -229,7 +231,11 @@ export default function VideoPlayer({
           </Button>
         )}
         {isCurrentUserStreaming && (
-          <Button variant='destructive' onClick={stopScreenSharing}>
+          <Button
+            variant='destructive'
+            onClick={stopScreenSharing}
+            data-umami-event='Stop Share Screen button'
+          >
             <ScreenShareOff />
             <span>Stop Sharing Screen</span>
           </Button>

@@ -43,7 +43,7 @@ export default function Home() {
           </div>
         </div>
 
-        <Button disabled={isCreatingRoom}>
+        <Button disabled={isCreatingRoom} data-umami-event='Create Room button'>
           {isCreatingRoom && <Loader2 className='animate-spin' />}Create Room
         </Button>
       </form>

@@ -47,6 +47,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
         size='icon'
         variant='outline'
         onClick={() => setIsModalOpen(true)}
+        data-umami-event='Open Room Settings button'
       >
         <Settings />
         <span className='sr-only'>Open Room Settings</span>
@@ -83,7 +84,10 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
                     name='new_username'
                     id='new_username'
                   />
-                  <Button disabled={isUpdatingUserName}>
+                  <Button
+                    disabled={isUpdatingUserName}
+                    data-umami-event='Update Username button'
+                  >
                     {isUpdatingUserName && <Loader2 className='animate-spin' />}
                     Save
                   </Button>
@@ -103,6 +107,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
                   variant='destructive'
                   className='w-fit'
                   onClick={() => setAlertDialogOpen(true)}
+                  data-umami-event='Open Delete Room Dialog button'
                 >
                   Delete this room
                 </Button>

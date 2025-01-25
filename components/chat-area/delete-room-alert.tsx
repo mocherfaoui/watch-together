@@ -50,12 +50,16 @@ export default function DeleteRoomAlert({
           {deleteRoomState?.error && (
             <p className='text-destructive text-sm'>{deleteRoomState?.error}</p>
           )}
-          <AlertDialogCancel onClick={() => setAlertDialogOpen(false)}>
+          <AlertDialogCancel
+            onClick={() => setAlertDialogOpen(false)}
+            data-umami-event='Cancel Delete Room button'
+          >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             disabled={isDeletingRoom}
             onClick={() => startTransition(() => deleteRoomAction())}
+            data-umami-event="Confirm Delete Room button"
           >
             {isDeletingRoom && <Loader2 className='animate-spin' />}
             Continue
