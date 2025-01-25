@@ -91,7 +91,13 @@ export default function ChatArea({
                 {optimisticMessages?.map((message) => (
                   <div key={message.id} className='text-sm'>
                     <span className='inline-flex items-baseline mr-1'>
-                      <span className='font-semibold'>
+                      <span
+                        className={cn({
+                          'font-semibold': true,
+                          'underline decoration-dashed decoration-1 underline-offset-2':
+                            roomProfile.id === message.sender?.id
+                        })}
+                      >
                         {message.sender?.name}
                       </span>
                       <MessageTimestamp timestamp={message.sent_at} />:

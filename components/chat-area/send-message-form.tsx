@@ -48,7 +48,7 @@ export default function SendMessageForm({
       updateOptimisticRoomProfile({ name: userName })
       addOptimisticMessages({
         ...newMessage,
-        sender: { name: userName }
+        sender: { name: userName, id: roomProfile.id }
       })
 
       const submittedForm = await sendNewUserMessage(
@@ -76,7 +76,7 @@ export default function SendMessageForm({
 
     addOptimisticMessages({
       ...newMessage,
-      sender: { name: roomProfile.name }
+      sender: { name: roomProfile.name, id: roomProfile.id }
     })
 
     const submittedForm = await sendMessage(newMessage, roomProfile)
