@@ -108,6 +108,7 @@ export default function VideoPlayer({
       })
       await player.load(new URL(streamOutput ?? ''))
       player.unmute()
+      umami.track('Stream loaded for guest')
     }
     loadGuestStream()
     return () => player.destroy()
@@ -128,6 +129,7 @@ export default function VideoPlayer({
       }
       startTransition(() => addOptimisticRoomData(newRoomState))
       await updateRoom(roomId, newRoomState)
+      umami.track('Stream stopped using browser native button')
     }
 
     const stream = videoStreamRef.current?.srcObject as MediaStream
@@ -178,6 +180,7 @@ export default function VideoPlayer({
       startTransition(() => addOptimisticRoomData(newRoomState))
       await updateRoom(roomId, newRoomState)
 
+      umami.track('Stream started')
       setStreamState('streaming')
     } catch (error) {
       console.error('Error starting stream:', error)
@@ -203,6 +206,7 @@ export default function VideoPlayer({
     }
     startTransition(() => addOptimisticRoomData(newRoomState))
     await updateRoom(roomId, newRoomState)
+    umami.track('Stream stopped using custom button')
   }
 
   return (
@@ -223,7 +227,6 @@ export default function VideoPlayer({
             onClick={startStream}
             className='hidden lg:flex'
             disabled={streamState === 'loading'}
-            data-umami-event='Start Share Screen button'
           >
             {streamState === 'loading' && <Loader2 className='animate-spin' />}
             <ScreenShare />
@@ -234,7 +237,6 @@ export default function VideoPlayer({
           <Button
             variant='destructive'
             onClick={stopScreenSharing}
-            data-umami-event='Stop Share Screen button'
           >
             <ScreenShareOff />
             <span>Stop Sharing Screen</span>
