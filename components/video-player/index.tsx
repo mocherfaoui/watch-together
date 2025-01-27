@@ -22,6 +22,7 @@ import { WHIPClient } from '@eyevinn/whip-web-client'
 import { cn } from '@/lib/utils'
 import { StreamState } from '@/types'
 import { WebRTCPlayer } from '@eyevinn/webrtc-player'
+import { trackEvent } from '@/utils'
 
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
 
@@ -57,7 +58,7 @@ export default function VideoPlayer({
     const videoUrl = formData.get('video_url') as string
     addOptimisticRoomData({ video_url: videoUrl })
     await updateRoom(roomId, { video_url: videoUrl })
-    umami.track('Room Video Updated')
+    trackEvent('Room Video Updated')
   }
 
   useEffect(() => {
@@ -108,7 +109,7 @@ export default function VideoPlayer({
       })
       await player.load(new URL(streamOutput ?? ''))
       player.unmute()
-      umami.track('Stream loaded for guest')
+      trackEvent('Stream loaded for guest')
     }
     loadGuestStream()
     return () => player.destroy()
@@ -129,7 +130,7 @@ export default function VideoPlayer({
       }
       startTransition(() => addOptimisticRoomData(newRoomState))
       await updateRoom(roomId, newRoomState)
-      umami.track('Stream stopped using browser native button')
+      trackEvent('Stream stopped using browser native button')
     }
 
     const stream = videoStreamRef.current?.srcObject as MediaStream
@@ -180,8 +181,8 @@ export default function VideoPlayer({
       startTransition(() => addOptimisticRoomData(newRoomState))
       await updateRoom(roomId, newRoomState)
 
-      umami.track('Stream started')
       setStreamState('streaming')
+      trackEvent('Stream started')
     } catch (error) {
       console.error('Error starting stream:', error)
       setStreamState('not started')
@@ -206,7 +207,7 @@ export default function VideoPlayer({
     }
     startTransition(() => addOptimisticRoomData(newRoomState))
     await updateRoom(roomId, newRoomState)
-    umami.track('Stream stopped using custom button')
+    trackEvent('Stream stopped using custom button')
   }
 
   return (
@@ -234,10 +235,7 @@ export default function VideoPlayer({
           </Button>
         )}
         {isCurrentUserStreaming && (
-          <Button
-            variant='destructive'
-            onClick={stopScreenSharing}
-          >
+          <Button variant='destructive' onClick={stopScreenSharing}>
             <ScreenShareOff />
             <span>Stop Sharing Screen</span>
           </Button>

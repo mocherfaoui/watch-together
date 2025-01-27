@@ -5,3 +5,9 @@ export function generateUUID(): string {
     return v.toString(16)
   })
 }
+
+export function trackEvent(eventName: string) {
+  if (typeof umami === 'undefined') return
+
+  umami.track(eventName)
+}
