@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="overflow-hidden">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh`}
       >
         {process.env.ACTIVATE_ANALYTICS === '1' && (
           <Script

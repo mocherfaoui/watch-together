@@ -14,7 +14,7 @@ export default function Home() {
   )
 
   return (
-    <main className='min-h-screen flex flex-col items-center justify-center p-4'>
+    <main className='h-full flex flex-col items-center justify-center p-4'>
       <h1 className='text-4xl font-bold mb-8'>Watch Together</h1>
       <form
         className='flex flex-col w-full max-w-md gap-4'
@@ -22,7 +22,12 @@ export default function Home() {
       >
         <div className='flex flex-col gap-3'>
           <div className='flex flex-col gap-2 flex-1'>
-            <Label htmlFor='video_url'>Video URL</Label>
+            <Label htmlFor='video_url'>
+              Video URL
+              <span className='ml-1 text-xs text-gray-500'>
+                (supports Youtube and Vimeo only)
+              </span>
+            </Label>
             <Input
               type='url'
               placeholder=''
