@@ -15,7 +15,6 @@ import {
   useRef
 } from 'react'
 import { Input } from '../ui/input'
-import dynamic from 'next/dynamic'
 import { Button } from '../ui/button'
 import { Loader2, ScreenShare, ScreenShareOff } from 'lucide-react'
 import { WHIPClient } from '@eyevinn/whip-web-client'
@@ -23,8 +22,14 @@ import { cn } from '@/lib/utils'
 import { StreamState } from '@/types'
 import { WebRTCPlayer } from '@eyevinn/webrtc-player'
 import { trackEvent } from '@/utils'
-
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
+import {
+  MediaPlayer,
+  MediaPlayerInstance,
+  MediaProvider,
+  Poster
+} from '@vidstack/react'
+import { VideoLayout } from './video-layout'
+import '@vidstack/react/player/styles/base.css'
 
 export default function VideoPlayer({
   roomData,
@@ -40,10 +45,10 @@ export default function VideoPlayer({
     roomData,
     (state, newState) => ({ ...state, ...newState } as Tables<'room'>)
   )
-  const [isPlaying, setIsPlaying] = useState(false)
   const [streamState, setStreamState] = useState<StreamState>(
     roomData.is_streaming ? 'streaming' : 'not started'
   )
+  const videoPlayerRef = useRef<MediaPlayerInstance>(null)
   const videoStreamRef = useRef<HTMLVideoElement>(null)
 
   const {
@@ -66,7 +71,11 @@ export default function VideoPlayer({
     const channel = supabase
       .channel(`room:${roomId}:updates`)
       .on('broadcast', { event: 'playback-state' }, async ({ payload }) => {
-        setIsPlaying(payload.isPlaying)
+        if (payload.isPlaying) {
+          await videoPlayerRef.current?.play()
+        } else {
+          await videoPlayerRef.current?.pause()
+        }
       })
       .on(
         'broadcast',
@@ -268,13 +277,11 @@ export default function VideoPlayer({
             hidden: ['streaming', 'loading'].includes(streamState)
           })}
         >
-          <ReactPlayer
-            playing={isPlaying}
-            url={video_url as string}
-            controls={true}
-            width='100%'
-            height='100%'
-            style={{ position: 'absolute', top: 0, left: 0 }}
+          <MediaPlayer
+            ref={videoPlayerRef}
+            src={video_url}
+            playsInline
+            className='h-full w-full border-0 rounded-none'
             onPlay={async () => {
               await broadcastMessage({
                 room: `room:${roomId}:updates`,
@@ -289,7 +296,12 @@ export default function VideoPlayer({
                 payload: { isPlaying: false }
               })
             }}
-          />
+          >
+            <MediaProvider className='h-full w-full *:!h-full'>
+              <Poster className='border-0 rounded-none absolute inset-0 block h-full w-full opacity-0 transition-opacity data-[visible]:opacity-100 object-cover' />
+            </MediaProvider>
+            <VideoLayout />
+          </MediaPlayer>
         </div>
       </div>
     </div>
