@@ -16,7 +16,7 @@ import {
 } from 'react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { Loader2, ScreenShare, ScreenShareOff } from 'lucide-react'
+import { Info, Loader2, ScreenShare, ScreenShareOff } from 'lucide-react'
 import { WHIPClient } from '@eyevinn/whip-web-client'
 import { cn } from '@/lib/utils'
 import { StreamState } from '@/types'
@@ -30,6 +30,7 @@ import {
 } from '@vidstack/react'
 import { VideoLayout } from './video-layout'
 import '@vidstack/react/player/styles/base.css'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 
 export default function VideoPlayer({
   roomData,
@@ -222,7 +223,7 @@ export default function VideoPlayer({
   return (
     <div className='flex flex-col flex-1'>
       <div className='flex gap-2 border-b border-gray-200 p-3'>
-        <form className='w-full' action={handleUpdateRoomVideo}>
+        <form className='w-full relative' action={handleUpdateRoomVideo}>
           <Input
             type='text'
             defaultValue={video_url as string}
@@ -231,6 +232,15 @@ export default function VideoPlayer({
             className='w-full px-3 py-2 text-base border border-gray-300 rounded-md'
             required={true}
           />
+
+          <Popover>
+            <PopoverTrigger className='absolute right-3 top-2.5 bg-white pl-3'>
+              <Info className='h-4 w-4 text-gray-600' />
+            </PopoverTrigger>
+            <PopoverContent className='text-sm w-fit'>
+              supports Youtube and Vimeo only
+            </PopoverContent>
+          </Popover>
         </form>
         {['not started', 'loading'].includes(streamState) && (
           <Button
