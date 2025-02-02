@@ -313,7 +313,7 @@ export default function VideoPlayer({
               })
             }}
           >
-            <MediaProvider className='h-full w-full !absolute'>
+            <MediaProvider className='h-full w-full !absolute [&_.vds-blocker]:h-full'>
               <Poster className='border-0 rounded-none absolute inset-0 block h-full w-full opacity-0 transition-opacity data-[visible]:opacity-100 object-contain backdrop-blur-lg' />
             </MediaProvider>
             <VideoLayout />
