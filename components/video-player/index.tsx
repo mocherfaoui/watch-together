@@ -222,7 +222,12 @@ export default function VideoPlayer({
 
   return (
     <div className='flex flex-col flex-1'>
-      <div className='flex gap-2 border-b border-gray-200 p-3'>
+      <div
+        className={cn({
+          'flex gap-2 border-b border-gray-200 p-3': true,
+          hidden: streamState === 'streaming' && !isCurrentUserStreaming
+        })}
+      >
         <form className='w-full relative' action={handleUpdateRoomVideo}>
           <Input
             type='text'
@@ -231,6 +236,7 @@ export default function VideoPlayer({
             placeholder='Enter video URL...'
             className='w-full px-3 py-2 text-base border border-gray-300 rounded-md'
             required={true}
+            disabled={streamState === 'streaming'}
           />
 
           <Popover>
