@@ -3,6 +3,7 @@ import { Tables } from '@/types/supabase'
 import {
   broadcastMessage,
   checkLiveStreamConnectionStatus,
+  createCloudflareStream,
   revalidatePathOnServer,
   updateRoom
 } from '@/utils/server-actions'
@@ -19,7 +20,7 @@ import { Button } from '../ui/button'
 import { Info, Loader2, ScreenShare, ScreenShareOff } from 'lucide-react'
 import { WHIPClient } from '@eyevinn/whip-web-client'
 import { cn } from '@/lib/utils'
-import { StreamState } from '@/types'
+import { StreamData, StreamState } from '@/types'
 import { WebRTCPlayer } from '@eyevinn/webrtc-player'
 import { trackEvent } from '@/utils'
 import {
@@ -154,8 +155,13 @@ export default function VideoPlayer({
   const startStream = async () => {
     setStreamState('loading')
     try {
+      let streamData: StreamData | undefined
+      if (!roomData.stream_input) {
+        streamData = await createCloudflareStream(roomId)
+      }
+
       const client = new WHIPClient({
-        endpoint: roomData.stream_input ?? '',
+        endpoint: streamData?.stream_input ?? roomData.stream_input ?? '',
         opts: { noTrickleIce: false }
       })
 
@@ -178,7 +184,9 @@ export default function VideoPlayer({
       // TODO: work on a better solution
       let isConnected = false
       while (!isConnected) {
-        isConnected = await checkLiveStreamConnectionStatus(roomData.stream_id)
+        isConnected = await checkLiveStreamConnectionStatus(
+          streamData?.stream_id ?? roomData.stream_id
+        )
         if (!isConnected) {
           await new Promise((resolve) => setTimeout(resolve, 2000)) // Wait for 2 seconds before checking again
         }
@@ -186,7 +194,10 @@ export default function VideoPlayer({
 
       const newRoomState = {
         is_streaming: true,
-        current_streamer_id: roomProfile.id
+        current_streamer_id: roomProfile.id,
+        stream_id: streamData?.stream_id,
+        stream_output: streamData?.stream_output,
+        stream_input: streamData?.stream_input
       }
       startTransition(() => addOptimisticRoomData(newRoomState))
       await updateRoom(roomId, newRoomState)

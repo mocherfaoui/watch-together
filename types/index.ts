@@ -27,3 +27,9 @@ export type BroadcastMessage = {
 }
 
 export type StreamState = 'streaming' | 'not started' | 'loading'
+
+export type StreamData = {
+  stream_id: string
+  stream_output: string
+  stream_input: string
+}

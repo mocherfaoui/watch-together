@@ -4,51 +4,54 @@ import { redirect } from 'next/navigation'
 import { createClient } from './supabase/server'
 import { revalidatePath } from 'next/cache'
 import { Tables } from '@/types/supabase'
-import { BroadcastMessage } from '@/types'
+import { BroadcastMessage, StreamData } from '@/types'
 
 export const handleCreateRoom = async (
   _formState: null,
   formData: FormData
 ) => {
-  const supabase = await createClient()
+  try {
+    const supabase = await createClient()
+    const userName = formData.get('username') as string
+    const videoUrl = formData.get('video_url') as string
 
-  const {
-    data: { user: currentUser }
-  } = await supabase.auth.getUser()
+    const {
+      data: { user: currentUser }
+    } = await supabase.auth.getUser()
 
-  const userName = formData.get('username') as string
-
-  const response = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/stream/live_inputs`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.CLOUDFLARE_STREAM_TOKEN}`
-      }
+    if (!currentUser) {
+      throw new Error('User not authenticated')
     }
-  )
-  const cloudflareResponse = await response.json()
 
-  const { data: roomData } = await supabase
-    .from('room')
-    .insert({
-      video_url: formData.get('video_url') as string,
-      host_id: currentUser?.id,
-      stream_id: cloudflareResponse?.result.uid ?? '',
-      stream_output: cloudflareResponse?.result.webRTCPlayback.url ?? '',
-      stream_input: cloudflareResponse?.result.webRTC.url ?? ''
+    const { data: roomData, error: roomError } = await supabase
+      .from('room')
+      .insert({
+        video_url: videoUrl,
+        host_id: currentUser.id,
+        stream_id: '',
+        stream_output: '',
+        stream_input: ''
+      })
+      .select()
+      .single()
+
+    if (roomError) {
+      console.error('Error creating room:', roomError)
+      throw new Error('Failed to create room')
+    }
+
+    await createRoomProfile({
+      roomId: roomData.id,
+      userName,
+      isHost: true,
+      hostId: currentUser.id
     })
-    .select()
-    .single()
 
-  await createRoomProfile({
-    roomId: roomData!.id,
-    userName,
-    isHost: true,
-    hostId: currentUser?.id
-  })
-
-  redirect(`/room/${roomData!.id}`)
+    redirect(`/room/${roomData.id}`)
+  } catch (error) {
+    console.error('Error in handleCreateRoom:', error)
+    throw error
+  }
 }
 
 export const updateRoom = async (
@@ -83,25 +86,30 @@ export async function createRoomProfile({
   isHost: boolean
   hostId: string | undefined
 }) {
-  const supabase = await createClient()
+  try {
+    const supabase = await createClient()
 
-  const { data: profile, error } = await supabase
-    .from('user')
-    .insert({
-      name: userName,
-      auth_id: hostId ?? '',
-      room_id: roomId,
-      is_host: isHost
-    })
-    .select()
-    .single()
+    const { data: profile, error } = await supabase
+      .from('user')
+      .insert({
+        name: userName,
+        auth_id: hostId ?? '',
+        room_id: roomId,
+        is_host: isHost
+      })
+      .select()
+      .single()
 
-  if (error) {
-    console.error('Error creating/getting room profile:', error)
+    if (error) {
+      console.error('Error creating room profile:', error)
+      throw new Error('Failed to create room profile')
+    }
+
+    return profile
+  } catch (error) {
+    console.error('Error in createRoomProfile:', error)
     throw error
   }
-
-  return profile
 }
 
 export const broadcastMessage = async ({
@@ -267,5 +275,52 @@ export async function checkLiveStreamConnectionStatus(
   liveInputId: string | null
 ) {
   const data = await getCloudflareStream(liveInputId)
-  return data.result?.status.current.state === 'connected'
+  return data.result?.status?.current.state === 'connected'
+}
+
+export const createCloudflareStream = async (
+  roomId: string
+): Promise<StreamData> => {
+  try {
+    const supabase = await createClient()
+
+    const response = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/stream/live_inputs`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.CLOUDFLARE_STREAM_TOKEN}`
+        }
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`Cloudflare API error: ${response.statusText}`)
+    }
+
+    const cloudflareResponse = await response.json()
+
+    const { error: updateError } = await supabase
+      .from('room')
+      .update({
+        stream_id: cloudflareResponse?.result.uid ?? '',
+        stream_output: cloudflareResponse?.result.webRTCPlayback.url ?? '',
+        stream_input: cloudflareResponse?.result.webRTC.url ?? ''
+      })
+      .eq('id', roomId)
+
+    if (updateError) {
+      console.error('Error updating room with stream data:', updateError)
+      throw new Error('Failed to update room with stream data')
+    }
+
+    return {
+      stream_id: cloudflareResponse?.result.uid ?? '',
+      stream_output: cloudflareResponse?.result.webRTCPlayback.url ?? '',
+      stream_input: cloudflareResponse?.result.webRTC.url ?? ''
+    }
+  } catch (error) {
+    console.error('Error creating Cloudflare stream:', error)
+    throw error
+  }
 }
