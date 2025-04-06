@@ -52,6 +52,7 @@ export type Database = {
         Row: {
           created_at: string
           current_streamer_id: string | null
+          expires_at: string | null
           host_id: string | null
           id: string
           is_streaming: boolean
@@ -64,6 +65,7 @@ export type Database = {
         Insert: {
           created_at?: string
           current_streamer_id?: string | null
+          expires_at?: string | null
           host_id?: string | null
           id?: string
           is_streaming?: boolean
@@ -76,6 +78,7 @@ export type Database = {
         Update: {
           created_at?: string
           current_streamer_id?: string | null
+          expires_at?: string | null
           host_id?: string | null
           id?: string
           is_streaming?: boolean
