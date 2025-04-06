@@ -23,6 +23,10 @@ export const handleCreateRoom = async (
       throw new Error('User not authenticated')
     }
 
+    // set room to expire in 6 hours by default
+    const expiresAt = new Date()
+    expiresAt.setUTCHours(expiresAt.getUTCHours() + 6)
+
     const { data: roomData, error: roomError } = await supabase
       .from('room')
       .insert({
@@ -30,7 +34,8 @@ export const handleCreateRoom = async (
         host_id: currentUser.id,
         stream_id: '',
         stream_output: '',
-        stream_input: ''
+        stream_input: '',
+        expires_at: expiresAt.toISOString()
       })
       .select()
       .single()
