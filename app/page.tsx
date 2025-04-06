@@ -52,6 +52,9 @@ export default function Home() {
           {isCreatingRoom && <Loader2 className='animate-spin' />}Create Room
         </Button>
       </form>
+      <p className='mt-4 text-sm text-gray-500 text-center max-w-md'>
+        the room will be automatically deleted after 6 hours.
+      </p>
     </main>
   )
 }
