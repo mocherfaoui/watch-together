@@ -57,6 +57,7 @@ export default function DeleteRoomAlert({
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
+            variant='destructive'
             disabled={isDeletingRoom}
             onClick={() => startTransition(() => deleteRoomAction())}
             data-umami-event="Confirm Delete Room button"
