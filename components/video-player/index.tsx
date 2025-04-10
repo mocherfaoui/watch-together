@@ -251,7 +251,7 @@ export default function VideoPlayer({
           />
 
           <Popover>
-            <PopoverTrigger className='absolute right-3 top-2.5 bg-white pl-3'>
+            <PopoverTrigger className='absolute right-3 top-2.5 bg-white ml-3'>
               <Info className='h-4 w-4 text-gray-600' />
             </PopoverTrigger>
             <PopoverContent className='text-sm w-fit'>
