@@ -7,27 +7,38 @@ import { Tables } from '@/types/supabase'
 import { BroadcastMessage, StreamData } from '@/types'
 
 export const handleCreateRoom = async (
-  _formState: null,
+  state: {
+    error: string
+    formData: { username: string; video_url: string }
+  } | null,
   formData: FormData
-) => {
+): Promise<{
+  error: string
+  formData: { username: string; video_url: string }
+} | null> => {
+  let roomData: Tables<'room'> | null = null
+  const username = formData.get('username') as string
+  const videoUrl = formData.get('video_url') as string
+
   try {
     const supabase = await createClient()
-    const userName = formData.get('username') as string
-    const videoUrl = formData.get('video_url') as string
 
     const {
       data: { user: currentUser }
     } = await supabase.auth.getUser()
 
     if (!currentUser) {
-      throw new Error('User not authenticated')
+      return {
+        error: 'User not authenticated',
+        formData: { username, video_url: videoUrl }
+      }
     }
 
     // set room to expire in 6 hours by default
     const expiresAt = new Date()
     expiresAt.setUTCHours(expiresAt.getUTCHours() + 6)
 
-    const { data: roomData, error: roomError } = await supabase
+    const { data: roomDataResponse, error: roomError } = await supabase
       .from('room')
       .insert({
         video_url: videoUrl,
@@ -42,20 +53,31 @@ export const handleCreateRoom = async (
 
     if (roomError) {
       console.error('Error creating room:', roomError)
-      throw new Error('Failed to create room')
+      return {
+        error: 'Failed to create room',
+        formData: { username, video_url: videoUrl }
+      }
     }
+
+    roomData = roomDataResponse
 
     await createRoomProfile({
       roomId: roomData.id,
-      userName,
+      userName: username,
       isHost: true,
       hostId: currentUser.id
     })
-
-    redirect(`/room/${roomData.id}`)
   } catch (error) {
     console.error('Error in handleCreateRoom:', error)
-    throw error
+    return {
+      error: 'An unexpected error occurred',
+      formData: { username, video_url: videoUrl }
+    }
+  } finally {
+    if (roomData) {
+      redirect(`/room/${roomData.id}`)
+    }
+    return null
   }
 }
 

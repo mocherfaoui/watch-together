@@ -8,10 +8,13 @@ import { useActionState } from 'react'
 import { Loader2 } from 'lucide-react'
 
 export default function Home() {
-  const [, createRoomAction, isCreatingRoom] = useActionState(
-    handleCreateRoom,
-    null
-  )
+  const [state, createRoomAction, isCreatingRoom] = useActionState<
+    {
+      error: string
+      formData: { username: string; video_url: string }
+    } | null,
+    FormData
+  >(handleCreateRoom, null)
 
   return (
     <main className='h-full flex flex-col items-center justify-center p-4'>
@@ -34,6 +37,7 @@ export default function Home() {
               name='video_url'
               id='video_url'
               required={true}
+              defaultValue={state?.formData?.video_url}
             />
           </div>
           <div className='flex flex-col gap-2 flex-1'>
@@ -44,9 +48,12 @@ export default function Home() {
               name='username'
               id='username'
               required={true}
+              defaultValue={state?.formData?.username}
             />
           </div>
         </div>
+
+        {state?.error && <p className='text-red-500 text-sm'>{state.error}</p>}
 
         <Button disabled={isCreatingRoom} data-umami-event='Create Room button'>
           {isCreatingRoom && <Loader2 className='animate-spin' />}Create Room
