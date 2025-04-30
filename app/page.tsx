@@ -33,7 +33,7 @@ export default function Home() {
             </Label>
             <Input
               type='url'
-              placeholder=''
+              placeholder='https://www.youtube.com/watch?v=19aPQJ2HYc8'
               name='video_url'
               id='video_url'
               required={true}
@@ -44,7 +44,7 @@ export default function Home() {
             <Label htmlFor='username'>Username</Label>
             <Input
               type='text'
-              placeholder=''
+              placeholder='alliex'
               name='username'
               id='username'
               required={true}
@@ -60,7 +60,7 @@ export default function Home() {
         </Button>
       </form>
       <p className='mt-4 text-sm text-gray-500 text-center max-w-md'>
-        the room will be automatically deleted after 6 hours.
+        The room will be automatically deleted after 6 hours.
       </p>
     </main>
   )
