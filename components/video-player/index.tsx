@@ -17,7 +17,13 @@ import {
 } from 'react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { Info, Loader2, ScreenShare, ScreenShareOff } from 'lucide-react'
+import {
+  Info,
+  Loader2,
+  ScreenShare,
+  ScreenShareOff,
+  ChevronDown
+} from 'lucide-react'
 import { WHIPClient } from '@eyevinn/whip-web-client'
 import { cn } from '@/lib/utils'
 import { StreamData, StreamState } from '@/types'
@@ -59,7 +65,9 @@ export default function VideoPlayer({
     current_streamer_id: currentStreamerId,
     stream_output: streamOutput
   } = optimisticRoomData
+
   const isCurrentUserStreaming = roomProfile.id === currentStreamerId
+  const isDemoRoom = roomId === 'demo'
 
   const handleUpdateRoomVideo = async (formData: FormData) => {
     const videoUrl = formData.get('video_url') as string
@@ -233,50 +241,54 @@ export default function VideoPlayer({
 
   return (
     <div className='flex flex-col flex-1'>
-      <div
-        className={cn({
-          'flex gap-2 border-b border-gray-200 p-3': true,
-          hidden: streamState === 'streaming' && !isCurrentUserStreaming
-        })}
-      >
-        <form className='w-full relative' action={handleUpdateRoomVideo}>
-          <Input
-            type='text'
-            defaultValue={video_url as string}
-            name='video_url'
-            placeholder='Enter video URL...'
-            className='w-full px-3 py-2 text-base border border-gray-300 rounded-md'
-            required={true}
-            disabled={streamState === 'streaming'}
-          />
+      {!isDemoRoom && (
+        <div
+          className={cn({
+            'flex gap-2 border-b border-gray-200 p-3': true,
+            hidden: streamState === 'streaming' && !isCurrentUserStreaming
+          })}
+        >
+          <form className='w-full relative' action={handleUpdateRoomVideo}>
+            <Input
+              type='text'
+              defaultValue={video_url as string}
+              name='video_url'
+              placeholder='Enter video URL...'
+              className='w-full px-3 py-2 text-base border border-gray-300 rounded-md'
+              required={true}
+              disabled={streamState === 'streaming'}
+            />
 
-          <Popover>
-            <PopoverTrigger className='absolute right-3 top-2.5 bg-white ml-3'>
-              <Info className='h-4 w-4 text-gray-600' />
-            </PopoverTrigger>
-            <PopoverContent className='text-sm w-fit'>
-              supports Youtube and Vimeo only
-            </PopoverContent>
-          </Popover>
-        </form>
-        {['not started', 'loading'].includes(streamState) && (
-          <Button
-            onClick={startStream}
-            className='hidden lg:flex'
-            disabled={streamState === 'loading'}
-          >
-            {streamState === 'loading' && <Loader2 className='animate-spin' />}
-            <ScreenShare />
-            <span>Share Screen</span>
-          </Button>
-        )}
-        {isCurrentUserStreaming && (
-          <Button variant='destructive' onClick={stopScreenSharing}>
-            <ScreenShareOff />
-            <span>Stop Sharing Screen</span>
-          </Button>
-        )}
-      </div>
+            <Popover>
+              <PopoverTrigger className='absolute right-[1px] top-[1px] flex justify-center items-center h-[34px] w-[34px] bg-white ml-3 rounded-md'>
+                <Info className='h-4 w-4 text-gray-600' />
+              </PopoverTrigger>
+              <PopoverContent className='text-sm w-fit'>
+                supports Youtube and Vimeo only
+              </PopoverContent>
+            </Popover>
+          </form>
+          {!isDemoRoom && ['not started', 'loading'].includes(streamState) && (
+            <Button
+              onClick={startStream}
+              className='hidden lg:flex'
+              disabled={streamState === 'loading'}
+            >
+              {streamState === 'loading' && (
+                <Loader2 className='animate-spin' />
+              )}
+              <ScreenShare />
+              <span>Share Screen</span>
+            </Button>
+          )}
+          {isCurrentUserStreaming && (
+            <Button variant='destructive' onClick={stopScreenSharing}>
+              <ScreenShareOff />
+              <span>Stop Sharing Screen</span>
+            </Button>
+          )}
+        </div>
+      )}
       <div className='flex-1 min-h-[300px] relative'>
         <div
           className={cn({
@@ -330,6 +342,16 @@ export default function VideoPlayer({
             <VideoLayout />
           </MediaPlayer>
         </div>
+        {isDemoRoom && (
+          <div className='absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-10 drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]'>
+            <div className='flex flex-col items-center gap-1 text-white'>
+              <span className='text-sm whitespace-nowrap'>
+                Scroll to create your room
+              </span>
+              <ChevronDown className='h-6 w-6 animate-bounce' />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -25,7 +25,6 @@
     "@vidstack/react": "^1.12.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.9.2",
     "install": "^0.13.0",
     "lucide-react": "^0.468.0",
     "next": "^15.1.2",

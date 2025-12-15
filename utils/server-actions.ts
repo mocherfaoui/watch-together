@@ -351,3 +351,43 @@ export const createCloudflareStream = async (
     throw error
   }
 }
+
+export async function getOrCreateDemoRoom(): Promise<Tables<'room'>> {
+  const supabase = await createClient()
+  const DEMO_ROOM_ID = 'demo'
+
+  const { data: existingRoom } = await supabase
+    .from('room')
+    .select()
+    .eq('id', DEMO_ROOM_ID)
+    .single()
+
+  if (existingRoom) {
+    return existingRoom
+  }
+
+  const {
+    data: { user: currentUser }
+  } = await supabase.auth.getUser()
+
+  const { data: newRoom, error } = await supabase
+    .from('room')
+    .insert({
+      id: DEMO_ROOM_ID,
+      video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      host_id: currentUser?.id ?? null,
+      stream_id: '',
+      stream_output: '',
+      stream_input: '',
+      expires_at: null
+    })
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error creating demo room:', error)
+    throw new Error('Failed to create demo room')
+  }
+
+  return newRoom
+}
