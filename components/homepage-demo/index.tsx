@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
 import VideoPlayer from '@/components/video-player'
+import { motion, useScroll, useTransform } from 'motion/react'
 import ChatArea from '@/components/chat-area'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -29,19 +29,23 @@ export default function HomepageDemo({
     FormData
   >(handleCreateRoom, null)
 
-  useEffect(() => {
-    document.documentElement.style.scrollSnapType = 'y mandatory'
-    document.documentElement.style.scrollBehavior = 'smooth'
-
-    return () => {
-      document.documentElement.style.scrollSnapType = ''
-      document.documentElement.style.scrollBehavior = ''
-    }
-  }, [])
+  const { scrollYProgress } = useScroll()
+  const blurBackground = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [
+      'blur(0px) brightness(1)',
+      'blur(4px) brightness(0.8)',
+      'blur(6px) brightness(0.4)'
+    ]
+  )
 
   return (
     <div className='relative'>
-      <div className='h-dvh flex flex-col md:flex-row w-full snap-start relative'>
+      <motion.div
+        className='h-svh fixed top-0 flex flex-col md:flex-row w-full'
+        style={{ filter: blurBackground }}
+      >
         <div className='flex flex-1'>
           <VideoPlayer roomData={roomData} roomProfile={roomProfile} />
         </div>
@@ -50,15 +54,15 @@ export default function HomepageDemo({
           messages={messages}
           roomId={roomData.id}
         />
-      </div>
+      </motion.div>
 
-      <div className='h-dvh flex flex-col items-center justify-center p-4 bg-gradient-to-b from-background to-muted snap-start'>
-        <div className='max-w-md m-auto scroll-animate-form'>
+      <div className='h-screen flex flex-col mt-[100vh] relative z-[2] items-center justify-center p-4'>
+        <div className='max-w-md m-auto'>
           <div className='text-center mb-12'>
-            <h1 className='text-5xl font-bold leading-[1.1] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60'>
+            <h1 className='text-5xl font-bold leading-[1.1] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60'>
               Watch Together
             </h1>
-            <p className='text-xl text-muted-foreground max-w-2xl mx-auto'>
+            <p className='text-xl text-muted max-w-2xl mx-auto'>
               Watch videos and chat with friends in real-time.
             </p>
           </div>
@@ -119,7 +123,7 @@ export default function HomepageDemo({
             </form>
           </div>
 
-          <p className='mt-6 text-sm text-muted-foreground text-center max-w-md'>
+          <p className='mt-6 text-sm text-muted text-center max-w-md'>
             The room will be automatically deleted after 6 hours.
           </p>
         </div>
