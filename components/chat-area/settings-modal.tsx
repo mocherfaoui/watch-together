@@ -53,7 +53,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
         <span className='sr-only'>Open Room Settings</span>
       </Button>
       <Sheet open={isModalOpen} onOpenChange={() => setIsModalOpen(false)}>
-        <SheetContent>
+        <SheetContent className='md:w-[40vw] lg:w-[25vw]'>
           <SheetHeader className='text-left'>
             <SheetTitle className='text-xl'>Room Settings</SheetTitle>
             <SheetDescription>
