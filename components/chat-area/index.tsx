@@ -15,6 +15,8 @@ import MessageTimestamp from './message-timestamp'
 import { ModifiedMessageType } from '@/types'
 import SettingsModal from './settings-modal'
 import SendMessageForm from './send-message-form'
+import OnlineUsers from './online-users'
+import { ButtonGroup } from '../ui/button-group'
 
 export default function ChatArea({
   roomProfile,
@@ -74,10 +76,14 @@ export default function ChatArea({
     <>
       <div className='bg-white h-full w-full md:w-[40vw] lg:w-[25vw] border-t md:border-l md:border-t-0 border-gray-200'>
         <div className='flex flex-col h-full'>
-          <div className='h-[61px] flex border-b border-gray-200 px-3 items-center justify-between'>
-            <h3 className='text-base font-semibold uppercase'>Room Chat</h3>
+          <ButtonGroup className='h-[61px] w-full flex px-3 items-center justify-end'>
+            <OnlineUsers
+              roomId={roomId}
+              userId={roomProfile.id}
+              userName={roomProfile.name}
+            />
             {roomProfile.name && <SettingsModal roomProfile={roomProfile} />}
-          </div>
+          </ButtonGroup>
           <div className='relative flex flex-1'>
             <div
               ref={messagesRef}
