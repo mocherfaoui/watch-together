@@ -310,6 +310,16 @@ export default function VideoPlayer({
             <p className='text-lg'>Setting up the stream...</p>
           </div>
         )}
+        {isDemoRoom && (
+          <div className='absolute bottom-28 left-1/2 -translate-x-1/2 z-[1] flex flex-col items-center gap-2 pointer-events-none drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]'>
+            <div className='flex flex-col items-center gap-1 text-white'>
+              <span className='text-sm whitespace-nowrap'>
+                Scroll to create your room
+              </span>
+              <ChevronDown className='h-6 w-6 animate-bounce' />
+            </div>
+          </div>
+        )}
         <div
           className={cn({
             'relative h-full': true,
@@ -342,16 +352,6 @@ export default function VideoPlayer({
             <VideoLayout />
           </MediaPlayer>
         </div>
-        {isDemoRoom && (
-          <div className='absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-10 drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]'>
-            <div className='flex flex-col items-center gap-1 text-white'>
-              <span className='text-sm whitespace-nowrap'>
-                Scroll to create your room
-              </span>
-              <ChevronDown className='h-6 w-6 animate-bounce' />
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
