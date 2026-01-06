@@ -311,7 +311,7 @@ export default function VideoPlayer({
           </div>
         )}
         {isDemoRoom && (
-          <div className='absolute bottom-28 left-1/2 -translate-x-1/2 z-[1] flex flex-col items-center gap-2 pointer-events-none drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]'>
+          <div className='absolute hidden bottom-28 left-1/2 -translate-x-1/2 z-[1] md:flex flex-col items-center gap-2 pointer-events-none drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]'>
             <div className='flex flex-col items-center gap-1 text-white'>
               <span className='text-sm whitespace-nowrap'>
                 Scroll to create your room
