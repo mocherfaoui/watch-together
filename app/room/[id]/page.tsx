@@ -1,5 +1,4 @@
-import ChatArea from '@/components/chat-area'
-import VideoPlayer from '@/components/video-player'
+import RoomForm from '@/components/room-form'
 import { createRoomProfile } from '@/utils/server-actions'
 import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
@@ -53,9 +52,11 @@ export default async function RoomPage({
     .eq('room_id', roomId)
 
   return (
-    <>
-      <VideoPlayer roomData={roomData} roomProfile={roomProfile} />
-      <ChatArea roomProfile={roomProfile} messages={messages} roomId={roomId} />
-    </>
+    <RoomForm
+      roomData={roomData}
+      roomProfile={roomProfile}
+      messages={messages}
+      roomId={roomId}
+    />
   )
 }

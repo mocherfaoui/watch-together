@@ -391,3 +391,50 @@ export async function getOrCreateDemoRoom(): Promise<Tables<'room'>> {
 
   return newRoom
 }
+
+export async function checkRoomExists(roomId: string): Promise<boolean> {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('room')
+    .select('id')
+    .eq('id', roomId)
+    .single()
+
+  return !!data
+}
+
+export async function getOrCreateUserRoom(): Promise<string> {
+  const supabase = await createClient()
+
+  const {
+    data: { user: currentUser }
+  } = await supabase.auth.getUser()
+
+  if (!currentUser) {
+    throw new Error('User not authenticated')
+  }
+
+  const expiresAt = new Date()
+  expiresAt.setUTCHours(expiresAt.getUTCHours() + 6)
+
+  const { data: roomDataResponse, error: roomError } = await supabase
+    .from('room')
+    .insert({
+      video_url: 'https://www.youtube.com/watch?v=ZHGw78IJryE',
+      host_id: currentUser.id,
+      stream_id: '',
+      stream_output: '',
+      stream_input: '',
+      expires_at: expiresAt.toISOString()
+    })
+    .select()
+    .single()
+
+  if (roomError) {
+    console.error('Error creating room:', roomError)
+    throw new Error('Failed to create room')
+  }
+
+  return roomDataResponse.id
+}

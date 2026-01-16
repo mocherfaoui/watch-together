@@ -64,6 +64,7 @@ export type Database = {
           stream_id: string | null
           stream_input: string | null
           stream_output: string | null
+          torrent_uploader_id: string | null
           updated_at: string
           video_url: string
         }
@@ -77,6 +78,7 @@ export type Database = {
           stream_id?: string | null
           stream_input?: string | null
           stream_output?: string | null
+          torrent_uploader_id?: string | null
           updated_at?: string
           video_url: string
         }
@@ -90,6 +92,7 @@ export type Database = {
           stream_id?: string | null
           stream_input?: string | null
           stream_output?: string | null
+          torrent_uploader_id?: string | null
           updated_at?: string
           video_url?: string
         }
@@ -97,6 +100,13 @@ export type Database = {
           {
             foreignKeyName: "room_current_streamer_id_fkey"
             columns: ["current_streamer_id"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_torrent_uploader_id_fkey"
+            columns: ["torrent_uploader_id"]
             isOneToOne: false
             referencedRelation: "user"
             referencedColumns: ["id"]
@@ -143,10 +153,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      generate_custom_uuid: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_custom_uuid: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never

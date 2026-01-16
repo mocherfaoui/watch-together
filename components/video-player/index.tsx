@@ -15,15 +15,7 @@ import {
   useState,
   useRef
 } from 'react'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import {
-  Info,
-  Loader2,
-  ScreenShare,
-  ScreenShareOff,
-  ChevronDown
-} from 'lucide-react'
+import { Download, Users, RefreshCw, FileX } from 'lucide-react'
 import { WHIPClient } from '@eyevinn/whip-web-client'
 import { cn } from '@/lib/utils'
 import { StreamData, StreamState } from '@/types'
@@ -37,14 +29,17 @@ import {
 } from '@vidstack/react'
 import { VideoLayout } from './video-layout'
 import '@vidstack/react/player/styles/base.css'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import { useWebTorrentDownload, formatSpeed } from '@/utils/webtorrent'
+import { Button } from '../ui/button'
 
 export default function VideoPlayer({
   roomData,
-  roomProfile
+  roomProfile,
+  localFile
 }: {
   roomData: Tables<'room'>
   roomProfile: Tables<'user'>
+  localFile?: { url: string; type: string } | null
 }) {
   const [optimisticRoomData, addOptimisticRoomData] = useOptimistic<
     Tables<'room'>,
@@ -56,25 +51,24 @@ export default function VideoPlayer({
   const [streamState, setStreamState] = useState<StreamState>(
     roomData.is_streaming ? 'streaming' : 'not started'
   )
+  const [streamUrl, setStreamUrl] = useState<string | null>(null)
   const videoPlayerRef = useRef<MediaPlayerInstance>(null)
   const videoStreamRef = useRef<HTMLVideoElement>(null)
+
+  const { downloadTorrent, torrentState } = useWebTorrentDownload()
+  const [showReplaceOption, setShowReplaceOption] = useState(false)
 
   const {
     video_url,
     id: roomId,
     current_streamer_id: currentStreamerId,
-    stream_output: streamOutput
+    stream_output: streamOutput,
+    torrent_uploader_id
   } = optimisticRoomData
 
   const isCurrentUserStreaming = roomProfile.id === currentStreamerId
-  const isDemoRoom = roomId === 'demo'
-
-  const handleUpdateRoomVideo = async (formData: FormData) => {
-    const videoUrl = formData.get('video_url') as string
-    addOptimisticRoomData({ video_url: videoUrl })
-    await updateRoom(roomId, { video_url: videoUrl })
-    trackEvent('Room Video Updated')
-  }
+  const isMagnetUri = video_url?.startsWith('magnet:')
+  const isUploader = torrent_uploader_id === roomProfile.id
 
   useEffect(() => {
     const supabase = createClient()
@@ -133,6 +127,36 @@ export default function VideoPlayer({
     loadGuestStream()
     return () => player.destroy()
   }, [isCurrentUserStreaming, streamState, streamOutput])
+
+  useEffect(() => {
+    if (!isMagnetUri || !video_url || isUploader) {
+      return
+    }
+
+    let cancelled = false
+    setShowReplaceOption(false)
+
+    const loadTorrent = async () => {
+      try {
+        const url = await downloadTorrent(video_url)
+        if (url && !cancelled) {
+          trackEvent('Torrent loaded for viewer')
+          setStreamUrl(url)
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Error loading torrent:', error)
+          setShowReplaceOption(true)
+        }
+      }
+    }
+
+    loadTorrent()
+
+    return () => {
+      cancelled = true
+    }
+  }, [video_url, isMagnetUri, isUploader, downloadTorrent])
 
   // when screen sharing is active, Chromium browsers display a native Stop sharing
   // button that stops the media stream and fires an inactive event. there is no way
@@ -241,54 +265,6 @@ export default function VideoPlayer({
 
   return (
     <div className='flex flex-col flex-1'>
-      {!isDemoRoom && (
-        <div
-          className={cn({
-            'flex gap-2 border-b border-gray-200 p-3': true,
-            hidden: streamState === 'streaming' && !isCurrentUserStreaming
-          })}
-        >
-          <form className='w-full relative' action={handleUpdateRoomVideo}>
-            <Input
-              type='text'
-              defaultValue={video_url as string}
-              name='video_url'
-              placeholder='Enter video URL...'
-              className='w-full px-3 py-2 text-base border border-gray-300 rounded-md'
-              required={true}
-              disabled={streamState === 'streaming'}
-            />
-
-            <Popover>
-              <PopoverTrigger className='absolute right-[1px] top-[1px] flex justify-center items-center h-[34px] w-[34px] bg-white ml-3 rounded-md'>
-                <Info className='h-4 w-4 text-gray-600' />
-              </PopoverTrigger>
-              <PopoverContent className='text-sm w-fit'>
-                supports Youtube and Vimeo only
-              </PopoverContent>
-            </Popover>
-          </form>
-          {!isDemoRoom && ['not started', 'loading'].includes(streamState) && (
-            <Button
-              onClick={startStream}
-              className='hidden lg:flex'
-              disabled={streamState === 'loading'}
-            >
-              {streamState === 'loading' && (
-                <Loader2 className='animate-spin' />
-              )}
-              <ScreenShare />
-              <span>Share Screen</span>
-            </Button>
-          )}
-          {isCurrentUserStreaming && (
-            <Button variant='destructive' onClick={stopScreenSharing}>
-              <ScreenShareOff />
-              <span>Stop Sharing Screen</span>
-            </Button>
-          )}
-        </div>
-      )}
       <div className='flex-1 min-h-[300px] relative'>
         <div
           className={cn({
@@ -310,16 +286,61 @@ export default function VideoPlayer({
             <p className='text-lg'>Setting up the stream...</p>
           </div>
         )}
-        {isDemoRoom && (
-          <div className='absolute hidden bottom-28 left-1/2 -translate-x-1/2 z-[1] md:flex flex-col items-center gap-2 pointer-events-none drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]'>
-            <div className='flex flex-col items-center gap-1 text-white'>
-              <span className='text-sm whitespace-nowrap'>
-                Scroll to create your room
+        {isMagnetUri && !isUploader && !torrentState.ready && (
+          <div className='absolute inset-0 flex flex-col justify-center items-center bg-black/80 z-10'>
+            <Download className='h-8 w-8 mb-3 animate-pulse text-white' />
+            <p className='text-lg text-white mb-2'>Loading torrent...</p>
+            <div className='flex items-center gap-4 text-sm text-gray-400'>
+              <span className='flex items-center gap-1'>
+                <Users className='h-4 w-4' />
+                {torrentState.numPeers} peers
               </span>
-              <ChevronDown className='h-6 w-6 animate-bounce' />
+              <span>↓ {formatSpeed(torrentState.downloadSpeed)}</span>
+              <span>{Math.round(torrentState.progress * 100)}%</span>
             </div>
+            {torrentState.error && (
+              <p className='text-red-500 mt-2 text-sm'>{torrentState.error}</p>
+            )}
+            {showReplaceOption && (
+              <Button
+                onClick={() =>
+                  window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                  })
+                }
+                variant='outline'
+                className='mt-4'
+              >
+                <RefreshCw className='h-4 w-4' />
+                Replace
+              </Button>
+            )}
           </div>
         )}
+        {isMagnetUri && isUploader && !localFile && (
+          <div className='absolute inset-0 flex flex-col justify-center items-center bg-black/80 z-10'>
+            <FileX className='h-8 w-8 mb-3 text-white' />
+            <p className='text-lg text-white mb-2'>File not available</p>
+            <p className='text-sm text-gray-400 mb-4 text-center px-4'>
+              The original file is no longer being shared. Upload a new one to
+              continue.
+            </p>
+            <Button
+              onClick={() =>
+                window.scrollTo({
+                  top: document.body.scrollHeight,
+                  behavior: 'smooth'
+                })
+              }
+              variant='outline'
+            >
+              <RefreshCw className='h-4 w-4' />
+              Replace
+            </Button>
+          </div>
+        )}
+
         <div
           className={cn({
             'relative h-full': true,
@@ -328,7 +349,18 @@ export default function VideoPlayer({
         >
           <MediaPlayer
             ref={videoPlayerRef}
-            src={video_url}
+            src={
+              isMagnetUri
+                ? isUploader && localFile
+                  ? {
+                      src: localFile.url,
+                      type: localFile.type as 'video/mp4'
+                    }
+                  : streamUrl
+                  ? { src: streamUrl, type: 'video/mp4' as const }
+                  : ''
+                : video_url
+            }
             playsInline
             className='h-full w-full border-0 rounded-none'
             onPlay={async () => {
