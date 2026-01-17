@@ -12,11 +12,11 @@ export function VideoLayout() {
   return (
     <div className='text-white'>
       <Gestures />
-      <Captions className='vds-captions media-preview:opacity-0 media-controls:bottom-[85px] media-captions:opacity-100 absolute inset-0 bottom-2 z-10 select-none break-words opacity-0 transition-[opacity,bottom] duration-300' />
-      <Controls.Root className='media-controls:opacity-100 absolute inset-0 z-10 flex h-full w-full flex-col bg-gradient-to-t from-black/10 to-transparent opacity-0 transition-opacity'>
+      <Captions className='vds-captions media-preview:opacity-0 media-controls:bottom-[85px] media-captions:opacity-100 absolute inset-0 bottom-2 z-10 select-none wrap-break-word opacity-0 transition-[opacity,bottom] duration-300' />
+      <Controls.Root className='media-controls:opacity-100 absolute inset-0 z-10 flex h-full w-full flex-col bg-linear-to-t from-black/10 to-transparent opacity-0 transition-opacity'>
         <div className='flex-1' />
         <div className='relative'>
-          <div className='bg-gradient-to-b from-transparent to-neutral-900/90 z-[-1] absolute bottom-0 w-full h-[calc(100%_+_15px)]' />
+          <div className='bg-linear-to-b from-transparent to-neutral-900/90 z-[-1] absolute bottom-0 w-full h-[calc(100%+15px)]' />
           <Controls.Group className='flex w-full items-center px-2'>
             <Sliders.Time />
           </Controls.Group>

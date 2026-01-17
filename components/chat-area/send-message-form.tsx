@@ -134,7 +134,7 @@ export default function SendMessageForm({
             setFormState({ ...formState, messageContent: event.target.value })
           }
         />
-        <Button size='icon' className='flex-shrink-0'>
+        <Button size='icon' className='shrink-0'>
           <SendHorizontal />
           <span className='sr-only'>Send Message</span>
         </Button>

@@ -24,10 +24,10 @@ export interface SettingsProps {
 }
 
 export const menuClass =
-  'animate-out fade-out slide-out-to-bottom-2 data-[open]:animate-in data-[open]:fade-in data-[open]:slide-in-from-bottom-4 flex h-[var(--menu-height)] max-h-[400px] min-w-[260px] flex-col overflow-y-auto overscroll-y-contain rounded-md border border-white/10 bg-black/95 p-2.5 font-sans text-[15px] font-medium outline-none backdrop-blur-sm transition-[height] duration-300 will-change-[height] data-[resizing]:overflow-hidden'
+  'animate-out fade-out slide-out-to-bottom-2 data-[open]:animate-in data-[open]:fade-in data-[open]:slide-in-from-bottom-4 flex h-(--menu-height) max-h-[400px] min-w-[260px] flex-col overflow-y-auto overscroll-y-contain rounded-md border border-white/10 bg-black/95 p-2.5 font-sans text-[15px] font-medium outline-none backdrop-blur-sm transition-[height] duration-300 will-change-[height] data-resizing:overflow-hidden'
 
 export const submenuClass =
-  'hidden w-full flex-col items-start justify-center outline-none data-[keyboard]:mt-[3px] data-[open]:inline-block'
+  'hidden w-full flex-col items-start justify-center outline-none data-keyboard:mt-[3px] data-open:inline-block'
 
 export function Settings({ placement, tooltipPlacement }: SettingsProps) {
   return (
@@ -35,7 +35,7 @@ export function Settings({ placement, tooltipPlacement }: SettingsProps) {
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
           <Menu.Button className={buttonClass}>
-            <SettingsIcon className='h-6 w-6 transform transition-transform duration-200 ease-out group-data-[open]:rotate-90' />
+            <SettingsIcon className='h-6 w-6 transform transition-transform duration-200 ease-out group-data-open:rotate-90' />
           </Menu.Button>
         </Tooltip.Trigger>
         <Tooltip.Content className={tooltipClass} placement={tooltipPlacement}>
@@ -108,11 +108,11 @@ function CaptionSubmenu() {
 function Radio({ children, ...props }: Menu.RadioProps) {
   return (
     <Menu.Radio
-      className='ring-media-focus group relative flex w-full cursor-pointer select-none items-center justify-start rounded-sm p-2.5 outline-none data-[hocus]:bg-white/10 data-[focus]:ring-[3px]'
+      className='ring-media-focus group relative flex w-full cursor-pointer select-none items-center justify-start rounded-sm p-2.5 outline-none data-hocus:bg-white/10 data-focus:ring-[3px]'
       {...props}
     >
-      <Circle className='h-3 w-3 text-white group-data-[checked]:hidden' />
-      <Circle className='fill-current text-white hidden h-3 w-3 group-data-[checked]:block p-[1px] rounded-full border border-white' />
+      <Circle className='h-3 w-3 text-white group-data-checked:hidden' />
+      <Circle className='fill-current text-white hidden h-3 w-3 group-data-checked:block p-px rounded-full border border-white' />
       <span className='ml-2 text-sm'>{children}</span>
     </Menu.Radio>
   )
@@ -133,16 +133,16 @@ function SubmenuButton({
 }: SubmenuButtonProps) {
   return (
     <Menu.Button
-      className='ring-media-focus parent left-0 z-10 flex w-full cursor-pointer select-none items-center justify-start rounded-sm bg-black/60 p-2.5 outline-none ring-inset data-[open]:sticky data-[open]:-top-2.5 data-[hocus]:bg-white/10 data-[focus]:ring-[3px] aria-disabled:hidden'
+      className='ring-media-focus parent left-0 z-10 flex w-full cursor-pointer select-none items-center justify-start rounded-sm bg-black/60 p-2.5 outline-none ring-inset data-open:sticky data-open:-top-2.5 data-hocus:bg-white/10 data-focus:ring-[3px] aria-disabled:hidden'
       disabled={disabled}
     >
-      <ChevronLeft className='parent-data-[open]:block -ml-0.5 mr-1.5 hidden h-[18px] w-[18px]' />
-      <div className='contents parent-data-[open]:hidden'>
+      <ChevronLeft className='parent-data-open:block -ml-0.5 mr-1.5 hidden h-[18px] w-[18px]' />
+      <div className='contents parent-data-open:hidden'>
         <Icon className='w-5 h-5' />
       </div>
-      <span className='ml-1.5 parent-data-[open]:ml-0'>{label}</span>
+      <span className='ml-1.5 parent-data-open:ml-0'>{label}</span>
       <span className='ml-auto text-sm text-white/50'>{hint}</span>
-      <ChevronRight className='parent-data-[open]:hidden ml-0.5 h-[18px] w-[18px] text-sm text-white/50' />
+      <ChevronRight className='parent-data-open:hidden ml-0.5 h-[18px] w-[18px] text-sm text-white/50' />
     </Menu.Button>
   )
 }

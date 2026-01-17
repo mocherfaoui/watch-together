@@ -162,9 +162,9 @@ export default function RoomForm({
       </motion.div>
       <motion.div
         style={{ opacity: hideScrollIndicator }}
-        className='fixed right-1/2 translate-x-1/2 md:translate-x-0 md:right-4 top-[80%] md:top-1/2 z-[1] flex flex-col justify-end items-center gap-2 pointer-events-none'
+        className='fixed right-1/2 translate-x-1/2 md:translate-x-0 md:right-4 top-[80%] md:top-1/2 z-1 flex flex-col justify-end items-center gap-2 pointer-events-none'
       >
-        <div className='flex flex-col items-center gap-1 relative text-foreground border border-1 h-12 w-6 rounded-xl before:content-[""] before:w-2 before:h-2 before:bg-gray-100 before:rounded-full before:top-3/4 before:-translate-y-1/2 before:absolute before:animate-fade-up'></div>
+        <div className='flex flex-col items-center gap-1 relative text-foreground border h-12 w-6 rounded-xl before:content-[""] before:w-2 before:h-2 before:bg-gray-100 before:rounded-full before:top-3/4 before:-translate-y-1/2 before:absolute before:animate-fade-up'></div>
         <div className='text-xs flex flex-col items-center text-white'>
           <span>Scroll</span>
           <span>up</span>
@@ -172,11 +172,11 @@ export default function RoomForm({
       </motion.div>
       <div
         ref={formSectionRef}
-        className='h-screen flex flex-col mt-[100vh] relative z-[2] items-center justify-center p-4'
+        className='h-screen flex flex-col mt-[100vh] relative z-2 items-center justify-center p-4'
       >
         <div className='max-w-md m-auto'>
           <div className='text-center mb-12'>
-            <h1 className='text-5xl font-bold leading-[1.1] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60'>
+            <h1 className='text-5xl font-bold leading-[1.1] mb-4 bg-clip-text text-transparent bg-linear-to-r from-white to-white/60'>
               Change Video
             </h1>
             <p className='text-xl text-muted max-w-2xl mx-auto'>
