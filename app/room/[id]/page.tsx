@@ -1,4 +1,4 @@
-import RoomForm from '@/components/room-form'
+import Room from '@/components/room'
 import { createRoomProfile } from '@/utils/server-actions'
 import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
@@ -52,7 +52,7 @@ export default async function RoomPage({
     .eq('room_id', roomId)
 
   return (
-    <RoomForm
+    <Room
       roomData={roomData}
       roomProfile={roomProfile}
       messages={messages}

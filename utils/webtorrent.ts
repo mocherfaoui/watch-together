@@ -92,7 +92,10 @@ const createWebTorrentClient = async function () {
   return __client
 }
 
-const sendFile = async function (file: File): Promise<string> {
+const sendFile = async function (
+  file: File,
+  onHashProgress?: (progress: number) => void
+): Promise<string> {
   await createWebTorrentClient()
 
   if (__torrent) {
@@ -102,10 +105,14 @@ const sendFile = async function (file: File): Promise<string> {
 
   return new Promise((resolve) => {
     const opts = {
-      announceList: TRACKERS.map((tracker) => [tracker])
+      announceList: TRACKERS.map((tracker) => [tracker]),
+      onProgress: (bytesHashed: number, totalSize: number) => {
+        onHashProgress?.(bytesHashed / totalSize)
+      }
     }
     __client!.seed([file], opts, (torrent: Torrent) => {
       __torrent = torrent
+      onHashProgress?.(1)
       console.log('Seeding:', torrent.magnetURI)
       resolve(torrent.magnetURI)
     })
@@ -155,6 +162,7 @@ const getStreamUrl = async function (magnetUri: string): Promise<string> {
 export type TorrentState = {
   magnetUri: string | null
   progress: number
+  hashingProgress: number
   downloadSpeed: number
   uploadSpeed: number
   numPeers: number
@@ -166,6 +174,7 @@ export function useWebTorrentSeed() {
   const [torrentState, setTorrentState] = useState<TorrentState>({
     magnetUri: null,
     progress: 0,
+    hashingProgress: 0,
     downloadSpeed: 0,
     uploadSpeed: 0,
     numPeers: 0,
@@ -184,6 +193,7 @@ export function useWebTorrentSeed() {
       setTorrentState({
         magnetUri: null,
         progress: 0,
+        hashingProgress: 0,
         downloadSpeed: 0,
         uploadSpeed: 0,
         numPeers: 0,
@@ -191,11 +201,14 @@ export function useWebTorrentSeed() {
         error: null
       })
 
-      const magnetUri = await sendFile(file)
+      const magnetUri = await sendFile(file, (hashingProgress) => {
+        setTorrentState((prev) => ({ ...prev, hashingProgress }))
+      })
 
       setTorrentState((prev) => ({
         ...prev,
         magnetUri,
+        hashingProgress: 1,
         ready: true
       }))
 
@@ -233,6 +246,7 @@ export function useWebTorrentSeed() {
     setTorrentState({
       magnetUri: null,
       progress: 0,
+      hashingProgress: 0,
       downloadSpeed: 0,
       uploadSpeed: 0,
       numPeers: 0,
@@ -260,6 +274,7 @@ export function useWebTorrentDownload() {
   const [torrentState, setTorrentState] = useState<TorrentState>({
     magnetUri: null,
     progress: 0,
+    hashingProgress: 0,
     downloadSpeed: 0,
     uploadSpeed: 0,
     numPeers: 0,
@@ -279,6 +294,7 @@ export function useWebTorrentDownload() {
         setTorrentState({
           magnetUri,
           progress: 0,
+          hashingProgress: 0,
           downloadSpeed: 0,
           uploadSpeed: 0,
           numPeers: 0,
@@ -327,6 +343,7 @@ export function useWebTorrentDownload() {
     setTorrentState({
       magnetUri: null,
       progress: 0,
+      hashingProgress: 0,
       downloadSpeed: 0,
       uploadSpeed: 0,
       numPeers: 0,
