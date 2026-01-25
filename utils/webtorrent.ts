@@ -9,12 +9,7 @@ if (typeof window !== 'undefined') {
   window.WEBTORRENT_ANNOUNCE = null
 }
 
-const TRACKERS = [
-  'wss://tracker.openwebtorrent.com',
-  'wss://tracker.webtorrent.dev',
-  'wss://tracker.files.fm:7073/announce',
-  'wss://tracker.btorrent.xyz'
-]
+const TRACKERS = ['wss://tracker.openwebtorrent.com']
 
 let __client: WebTorrentInstance | null = null
 let __torrent: Torrent | null = null
