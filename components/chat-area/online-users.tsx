@@ -57,6 +57,10 @@ export default function OnlineUsers({
     }
   }, [roomId, userId, userName])
 
+  if (onlineUsers.length === 0) {
+    return null
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
