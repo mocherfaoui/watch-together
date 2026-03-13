@@ -1,8 +1,7 @@
 'use client'
 
 import { motion, useScroll, useTransform } from 'motion/react'
-import VideoPlayer from '@/components/video-player'
-import ChatArea from '@/components/chat-area'
+import dynamic from 'next/dynamic'
 import UpdateRoomForm from '@/components/update-room-form'
 import { Tables } from '@/types/supabase'
 import { ModifiedMessageType } from '@/types'
@@ -14,6 +13,9 @@ import {
   useRef
 } from 'react'
 import { broadcastMessage, updateRoom } from '@/utils/server-actions'
+
+const VideoPlayer = dynamic(() => import('@/components/video-player'))
+const ChatArea = dynamic(() => import('@/components/chat-area'))
 
 export default function Room({
   roomData,
