@@ -65,7 +65,7 @@ export const handleCreateRoom = async (
       roomId: roomData.id,
       userName: username,
       isHost: true,
-      hostId: currentUser.id
+      authId: currentUser.id
     })
   } catch (error) {
     console.error('Error in handleCreateRoom:', error)
@@ -106,12 +106,12 @@ export async function createRoomProfile({
   roomId,
   userName,
   isHost,
-  hostId
+  authId
 }: {
   roomId: string
   userName: string
   isHost: boolean
-  hostId: string | undefined
+  authId: string | undefined
 }) {
   try {
     const supabase = await createClient()
@@ -120,7 +120,7 @@ export async function createRoomProfile({
       .from('user')
       .insert({
         name: userName,
-        auth_id: hostId ?? '',
+        auth_id: authId ?? '',
         room_id: roomId,
         is_host: isHost
       })
