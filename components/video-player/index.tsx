@@ -12,7 +12,7 @@ import {
   useState,
   useRef
 } from 'react'
-import { Download, Users, RefreshCw, FileX } from 'lucide-react'
+import { Download, Users, RefreshCw, FileX, AlertCircle } from 'lucide-react'
 
 import { trackEvent } from '@/utils'
 import {
@@ -24,6 +24,10 @@ import {
 import { VideoLayout } from './video-layout'
 import '@vidstack/react/player/styles/base.css'
 import { useWebTorrentDownload, formatSpeed } from '@/utils/webtorrent'
+import {
+  isYouTubePlayerUrl,
+  parseYouTubeIframeErrorCode
+} from '@/utils/youtube-iframe-messages'
 import { Button } from '../ui/button'
 
 export default function VideoPlayer({
@@ -47,11 +51,15 @@ export default function VideoPlayer({
 
   const { downloadTorrent, torrentState } = useWebTorrentDownload()
   const [showReplaceOption, setShowReplaceOption] = useState(false)
+  const [youtubeIframeError, setYoutubeIframeError] = useState<number | null>(
+    null
+  )
 
   const { video_url, id: roomId, torrent_uploader_id } = optimisticRoomData
 
   const isMagnetUri = video_url?.startsWith('magnet:')
   const isUploader = torrent_uploader_id === roomProfile.id
+  const isYoutube = !isMagnetUri && isYouTubePlayerUrl(video_url ?? '')
 
   useEffect(() => {
     const supabase = createClient()
@@ -116,6 +124,23 @@ export default function VideoPlayer({
     }
   }, [video_url, isMagnetUri, isUploader, downloadTorrent])
 
+  useEffect(() => {
+    setYoutubeIframeError(null)
+  }, [video_url])
+
+  useEffect(() => {
+    if (!isYoutube || !video_url) return
+
+    const onMessage = (event: MessageEvent) => {
+      const code = parseYouTubeIframeErrorCode(event)
+      console.log('YouTube iframe error:', code)
+      if (code != null) setYoutubeIframeError(code)
+    }
+
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [isYoutube, video_url])
+
   return (
     <div className='flex flex-col flex-1'>
       <div className='flex-1 min-h-[300px] relative'>
@@ -158,6 +183,31 @@ export default function VideoPlayer({
             <p className='text-sm text-gray-400 mb-4 text-center px-4'>
               The original file is no longer being shared. Upload a new one to
               continue.
+            </p>
+            <Button
+              onClick={() =>
+                window.scrollTo({
+                  top: document.body.scrollHeight,
+                  behavior: 'smooth'
+                })
+              }
+              variant='outline'
+            >
+              <RefreshCw className='h-4 w-4' />
+              Replace
+            </Button>
+          </div>
+        )}
+        {youtubeIframeError !== null && (
+          <div className='absolute inset-0 flex flex-col justify-center items-center bg-black/80 backdrop-blur-xl z-11'>
+            <AlertCircle className='h-8 w-8 mb-3 text-red-400' />
+            <p className='text-lg text-white mb-2'>
+              This video cannot be played
+            </p>
+            <p className='text-sm text-gray-400 mb-4 text-center px-4 max-w-md'>
+              YouTube reported a playback error (code {youtubeIframeError}).
+              Embedding may be disabled for this video, or it may be
+              unavailable.
             </p>
             <Button
               onClick={() =>
