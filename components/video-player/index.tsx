@@ -157,7 +157,9 @@ export default function VideoPlayer({
               <span>{Math.round(torrentState.progress * 100)}%</span>
             </div>
             {torrentState.error && (
-              <p className='text-red-500 mt-2 text-sm'>{torrentState.error}</p>
+              <p className='text-red-500 mt-2 text-sm'>
+                An error occurred while loading the torrent. Please try again.
+              </p>
             )}
             {showReplaceOption && (
               <Button
