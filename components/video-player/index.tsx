@@ -133,7 +133,7 @@ export default function VideoPlayer({
 
     const onMessage = (event: MessageEvent) => {
       const code = parseYouTubeIframeErrorCode(event)
-      console.log('YouTube iframe error:', code)
+
       if (code != null) setYoutubeIframeError(code)
     }
 
