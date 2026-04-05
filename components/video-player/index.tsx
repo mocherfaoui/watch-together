@@ -145,7 +145,7 @@ export default function VideoPlayer({
     <div className='flex flex-col flex-1'>
       <div className='flex-1 min-h-[300px] relative'>
         {isMagnetUri && !isUploader && !torrentState.ready && (
-          <div className='absolute inset-0 flex flex-col justify-center items-center bg-black/80 z-10'>
+          <div className='absolute inset-0 flex flex-col justify-center items-center bg-black/80 backdrop-blur-xl z-11'>
             <Download className='h-8 w-8 mb-3 animate-pulse text-white' />
             <p className='text-lg text-white mb-2'>Loading torrent...</p>
             <div className='flex items-center gap-4 text-sm text-gray-400'>
