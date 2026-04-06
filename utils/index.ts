@@ -31,3 +31,32 @@ export function getRoomIdCookieOptions(roomId: string) {
     maxAge: 60 * 60 * 24 * 7 // 7 days
   }
 }
+
+const randomVideos = [
+  'https://www.youtube.com/watch?v=ZHGw78IJryE',
+  'https://www.youtube.com/watch?v=uQauaVbPEAA',
+  'https://www.youtube.com/watch?v=4iQmPv_dTI0',
+  'https://www.youtube.com/watch?v=rKlA5tRu6f0',
+  'https://www.youtube.com/watch?v=-5EQIiabJvk',
+  'https://www.youtube.com/watch?v=l9uMoTMbyrQ',
+  'https://www.youtube.com/watch?v=19aPQJ2HYc8',
+  'https://www.youtube.com/watch?v=0AwxHCI_BnA',
+  'https://www.youtube.com/watch?v=4SZEDBFPpgw',
+  'https://www.youtube.com/watch?v=A45gzN0cgow',
+  'https://www.youtube.com/watch?v=FE3C4XpWl6M',
+  'https://www.youtube.com/watch?v=wpqm-05R2Jk',
+  'https://www.youtube.com/watch?v=TvZpn322LxE',
+  'https://www.youtube.com/watch?v=qLrnkK2YEcE',
+  'https://www.youtube.com/watch?v=0ScYz9sNaQk',
+  'https://www.youtube.com/watch?v=Ak4vLEBxIo4',
+  'https://www.youtube.com/watch?v=2lXD0vv-ds8',
+  'https://www.youtube.com/watch?v=YCi4erc-QeQ',
+  'https://www.youtube.com/watch?v=85E9Q5Wx210',
+  'https://www.youtube.com/watch?v=hbe3CQamF8k',
+  'https://www.youtube.com/watch?v=u7K72X4eo_s',
+  'https://www.youtube.com/watch?v=ZWmrfgj0MZI'
+]
+
+export function getRandomVideo(): string {
+  return randomVideos[Math.floor(Math.random() * randomVideos.length)]
+}

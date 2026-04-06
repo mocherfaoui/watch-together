@@ -5,6 +5,7 @@ import { createClient } from './supabase/server'
 import { revalidatePath } from 'next/cache'
 import { Tables } from '@/types/supabase'
 import { BroadcastMessage, StreamData } from '@/types'
+import { getRandomVideo } from '.'
 
 export const handleCreateRoom = async (
   state: {
@@ -421,7 +422,7 @@ export async function getOrCreateUserRoom(): Promise<string> {
   const { data: roomDataResponse, error: roomError } = await supabase
     .from('room')
     .insert({
-      video_url: 'https://www.youtube.com/watch?v=ZHGw78IJryE',
+      video_url: getRandomVideo(),
       host_id: currentUser.id,
       stream_id: '',
       stream_output: '',
