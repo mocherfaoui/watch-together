@@ -66,7 +66,7 @@ export default function ChatArea({
               userId={roomProfile.id}
               userName={roomProfile.name}
             />
-            {roomProfile.name && <SettingsModal roomProfile={roomProfile} />}
+            <SettingsModal roomProfile={roomProfile} />
           </ButtonGroup>
           <div className='relative flex flex-1'>
             <div

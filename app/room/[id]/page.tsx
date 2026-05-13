@@ -36,7 +36,6 @@ export default async function RoomPage({
 
     const newRoomProfile = await createRoomProfile({
       roomId,
-      userName: '',
       isHost: currentUser?.id === roomData.host_id,
       authId: currentUser?.id
     })

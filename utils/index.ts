@@ -60,3 +60,84 @@ const randomVideos = [
 export function getRandomVideo(): string {
   return randomVideos[Math.floor(Math.random() * randomVideos.length)]
 }
+
+const USERNAME_ADJECTIVES = [
+  'silent',
+  'lazy',
+  'brave',
+  'happy',
+  'sneaky',
+  'witty',
+  'cosmic',
+  'lucky',
+  'mellow',
+  'plucky',
+  'rusty',
+  'snappy',
+  'sunny',
+  'tiny',
+  'wild',
+  'zesty',
+  'fuzzy',
+  'jolly',
+  'crisp',
+  'misty',
+  'spicy',
+  'merry',
+  'breezy',
+  'gloomy',
+  'humble',
+  'nimble',
+  'quiet',
+  'royal',
+  'soft',
+  'stout',
+  'cheery',
+  'gentle'
+]
+
+const USERNAME_ANIMALS = [
+  'otter',
+  'fox',
+  'panda',
+  'owl',
+  'koala',
+  'tiger',
+  'lynx',
+  'gecko',
+  'hippo',
+  'mole',
+  'newt',
+  'quail',
+  'raven',
+  'seal',
+  'toad',
+  'wolf',
+  'yak',
+  'zebra',
+  'badger',
+  'crow',
+  'duck',
+  'falcon',
+  'heron',
+  'iguana',
+  'jackal',
+  'kiwi',
+  'llama',
+  'moose',
+  'narwhal',
+  'puffin',
+  'sloth',
+  'walrus'
+]
+
+export function generateUsername(): string {
+  const adjective =
+    USERNAME_ADJECTIVES[Math.floor(Math.random() * USERNAME_ADJECTIVES.length)]
+  const animal =
+    USERNAME_ANIMALS[Math.floor(Math.random() * USERNAME_ANIMALS.length)]
+  const suffix = Math.floor(Math.random() * 100)
+    .toString()
+    .padStart(2, '0')
+  return `${adjective}-${animal}-${suffix}`
+}

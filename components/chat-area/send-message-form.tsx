@@ -1,9 +1,9 @@
-import { startTransition, useOptimistic, useRef, useState } from 'react'
+import { startTransition, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { SendHorizontal } from 'lucide-react'
-import { sendMessage, sendNewUserMessage } from '@/utils/server-actions'
+import { sendMessage } from '@/utils/server-actions'
 import { generateUUID } from '@/utils'
 import { Tables } from '@/types/supabase'
 
@@ -14,7 +14,6 @@ type ComponentProps = {
 }
 
 const initialState = {
-  userName: '',
   messageContent: '',
   error: ''
 }
@@ -25,50 +24,14 @@ export default function SendMessageForm({
   addOptimisticMessages
 }: ComponentProps) {
   const [formState, setFormState] = useState(initialState)
-  const [optimisticRoomProfile, updateOptimisticRoomProfile] = useOptimistic<
-    Tables<'user'>,
-    { name: string }
-  >(roomProfile, (currentState, newState) => ({ ...currentState, ...newState }))
-  const { name: currentUserName } = optimisticRoomProfile
-
   const formRef = useRef<HTMLFormElement>(null)
 
   async function handleSendMessage() {
-    const { messageContent, userName } = formState
-
-    if (!roomProfile.name) {
-      const newMessage = {
-        id: generateUUID(),
-        content: messageContent,
-        room_id: roomId,
-        sent_at: new Date().toISOString(),
-        sender: roomProfile.id
-      }
-
-      updateOptimisticRoomProfile({ name: userName })
-      addOptimisticMessages({
-        ...newMessage,
-        sender: { name: userName, id: roomProfile.id }
-      })
-
-      const submittedForm = await sendNewUserMessage(
-        newMessage,
-        userName,
-        roomProfile
-      )
-      if (submittedForm?.error) {
-        setFormState({
-          userName,
-          messageContent,
-          error: submittedForm.error
-        })
-      }
-      return
-    }
+    const { messageContent } = formState
 
     const newMessage = {
       id: generateUUID(),
-      content: formState.messageContent,
+      content: messageContent,
       sender: roomProfile.id,
       room_id: roomId,
       sent_at: new Date().toISOString()
@@ -111,18 +74,6 @@ export default function SendMessageForm({
         </p>
       )}
       <div className='flex gap-2'>
-        {!currentUserName && (
-          <Input
-            type='text'
-            name='username'
-            placeholder='your username'
-            required={true}
-            value={formState.userName}
-            onChange={(event) =>
-              setFormState({ ...formState, userName: event.target.value })
-            }
-          />
-        )}
         <Input
           type='text'
           name='message_content'

@@ -5,7 +5,7 @@ import { createClient } from './supabase/server'
 import { revalidatePath } from 'next/cache'
 import { Tables } from '@/types/supabase'
 import { BroadcastMessage, StreamData } from '@/types'
-import { getRandomVideo } from '.'
+import { generateUsername, getRandomVideo } from '.'
 
 export const handleCreateRoom = async (
   state: {
@@ -64,7 +64,6 @@ export const handleCreateRoom = async (
 
     await createRoomProfile({
       roomId: roomData.id,
-      userName: username,
       isHost: true,
       authId: currentUser.id
     })
@@ -105,12 +104,10 @@ export async function revalidatePathOnServer(path: string) {
 
 export async function createRoomProfile({
   roomId,
-  userName,
   isHost,
   authId
 }: {
   roomId: string
-  userName: string
   isHost: boolean
   authId: string | undefined
 }) {
@@ -120,7 +117,7 @@ export async function createRoomProfile({
     const { data: profile, error } = await supabase
       .from('user')
       .insert({
-        name: userName,
+        name: generateUsername(),
         auth_id: authId ?? '',
         room_id: roomId,
         is_host: isHost
@@ -179,41 +176,6 @@ export const sendMessage = async (
     payload: {
       ...newMessage,
       sender: roomProfile
-    }
-  })
-  revalidatePath(`/room/${newMessage.room_id}`)
-}
-
-export const sendNewUserMessage = async (
-  newMessage: Tables<'message'>,
-  userName: string,
-  roomProfile: Tables<'user'>
-) => {
-  const supabase = await createClient()
-
-  await supabase
-    .from('user')
-    .update({ name: userName })
-    .eq('id', roomProfile.id)
-
-  const { error } = await supabase.from('message').insert(newMessage)
-
-  if (error) {
-    return {
-      error: 'an error occured, please try again',
-      payload: {
-        userName,
-        messageContent: newMessage.content
-      }
-    }
-  }
-
-  await broadcastMessage({
-    room: `room:${newMessage.room_id}:messages`,
-    event: 'new-message',
-    payload: {
-      ...newMessage,
-      sender: { ...roomProfile, name: userName }
     }
   })
   revalidatePath(`/room/${newMessage.room_id}`)
