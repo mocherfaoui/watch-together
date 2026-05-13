@@ -1,6 +1,5 @@
 'use client'
 import {
-  useState,
   useEffect,
   useRef,
   useOptimistic,
@@ -27,7 +26,6 @@ export default function ChatArea({
   messages: ModifiedMessageType
   roomId: string
 }) {
-  const [isScrollable, setIsScrollable] = useState(false)
   const [optimisticMessages, addOptimisticMessages] = useOptimistic<
     ModifiedMessageType,
     object
@@ -37,20 +35,6 @@ export default function ChatArea({
   )
   const messagesRef = useRef<HTMLDivElement>(null)
   const messagesBottom = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const checkScrollable = () => {
-      if (messagesRef.current) {
-        setIsScrollable(
-          messagesRef.current.scrollHeight > messagesRef.current.clientHeight
-        )
-      }
-    }
-
-    checkScrollable()
-    window.addEventListener('resize', checkScrollable)
-    return () => window.removeEventListener('resize', checkScrollable)
-  }, [])
 
   useEffect(() => {
     const supabase = createClient()
@@ -87,11 +71,7 @@ export default function ChatArea({
           <div className='relative flex flex-1'>
             <div
               ref={messagesRef}
-              className={cn({
-                'absolute top-0 left-0 h-full w-full flex flex-col-reverse overflow-y-auto px-3':
-                  true,
-                'pr-0': isScrollable
-              })}
+              className='absolute top-0 left-0 h-full w-full flex flex-col-reverse overflow-y-auto px-3'
             >
               <div className='flex flex-col gap-1 pt-1'>
                 {optimisticMessages?.map((message) => (
