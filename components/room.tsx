@@ -111,7 +111,7 @@ export default function Room({
       <RoomMessagesProvider roomId={roomId}>
         <motion.div
           className='h-full fixed bottom-0 flex flex-col md:flex-row w-full'
-          style={{ filter: blurBackground, transform: scaleBackground }}
+          style={{ filter: blurBackground }}
         >
           <div className='flex flex-1 bg-white'>
             <VideoPlayer
