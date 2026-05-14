@@ -54,7 +54,7 @@ export default function ChatArea({
     <>
       <div className='bg-white h-full w-full md:w-[40vw] lg:w-[25vw] border-t md:border-l md:border-t-0 border-gray-200'>
         <div className='flex flex-col h-full'>
-          <ButtonGroup className='h-[61px] w-full flex px-3 items-center justify-end'>
+          <ButtonGroup className='h-[61px] w-full flex px-3 items-center justify-end border-b border-gray-200'>
             <OnlineUsers
               roomId={roomId}
               userId={roomProfile.id}
