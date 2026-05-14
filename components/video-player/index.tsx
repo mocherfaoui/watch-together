@@ -19,9 +19,11 @@ import {
   MediaPlayer,
   MediaPlayerInstance,
   MediaProvider,
-  Poster
+  Poster,
+  useMediaStore
 } from '@vidstack/react'
 import { VideoLayout } from './video-layout'
+import FloatingMessages from './floating-messages'
 import '@vidstack/react/player/styles/base.css'
 import { useWebTorrentDownload, formatSpeed } from '@/utils/webtorrent'
 import {
@@ -48,6 +50,7 @@ export default function VideoPlayer({
   )
   const [streamUrl, setStreamUrl] = useState<string | null>(null)
   const videoPlayerRef = useRef<MediaPlayerInstance>(null)
+  const { fullscreen } = useMediaStore(videoPlayerRef)
 
   const { downloadTorrent, torrentState } = useWebTorrentDownload()
   const [showReplaceOption, setShowReplaceOption] = useState(false)
@@ -262,6 +265,7 @@ export default function VideoPlayer({
               <Poster className='border-0 rounded-none absolute inset-0 block h-full w-full opacity-0 transition-opacity data-visible:opacity-100 object-contain backdrop-blur-lg' />
             </MediaProvider>
             <VideoLayout />
+            {fullscreen && <FloatingMessages currentUserId={roomProfile.id} />}
           </MediaPlayer>
         </div>
       </div>

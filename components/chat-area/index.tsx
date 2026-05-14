@@ -5,7 +5,6 @@ import {
   useOptimistic,
   startTransition
 } from 'react'
-import { createClient } from '@/utils/supabase/client'
 import { cn } from '@/lib/utils'
 import { Tables } from '@/types/supabase'
 import { revalidatePathOnServer } from '@/utils/server-actions'
@@ -16,6 +15,7 @@ import SettingsModal from './settings-modal'
 import SendMessageForm from './send-message-form'
 import OnlineUsers from './online-users'
 import { ButtonGroup } from '../ui/button-group'
+import { useRoomMessages } from '../room-messages-provider'
 
 export default function ChatArea({
   roomProfile,
@@ -36,25 +36,19 @@ export default function ChatArea({
   const messagesRef = useRef<HTMLDivElement>(null)
   const messagesBottom = useRef<HTMLDivElement>(null)
 
+  const { subscribeToNewMessages } = useRoomMessages()
+
   useEffect(() => {
-    const supabase = createClient()
-    const channel = supabase
-      .channel(`room:${roomId}:messages`)
-      .on('broadcast', { event: 'new-message' }, async ({ payload }) => {
-        if (roomProfile.id === payload?.sender?.id) return
+    return subscribeToNewMessages(async (payload) => {
+      if (roomProfile.id === payload?.sender?.id) return
 
-        startTransition(() => {
-          addOptimisticMessages(payload)
-        })
-        await revalidatePathOnServer(`/room/${roomId}`)
+      startTransition(() => {
+        addOptimisticMessages(payload)
       })
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
+      await revalidatePathOnServer(`/room/${roomId}`)
+    })
     // eslint-disable-next-line
-  }, [roomProfile])
+  }, [subscribeToNewMessages, roomProfile.id, roomId])
 
   return (
     <>

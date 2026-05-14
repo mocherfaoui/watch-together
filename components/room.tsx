@@ -13,6 +13,7 @@ import {
   useRef
 } from 'react'
 import { broadcastMessage, updateRoom } from '@/utils/server-actions'
+import { RoomMessagesProvider } from '@/components/room-messages-provider'
 
 const VideoPlayer = dynamic(() => import('@/components/video-player'))
 const ChatArea = dynamic(() => import('@/components/chat-area'))
@@ -107,23 +108,25 @@ export default function Room({
 
   return (
     <div className='relative h-full w-full'>
-      <motion.div
-        className='h-full fixed top-0 flex flex-col md:flex-row w-full'
-        style={{ filter: blurBackground }}
-      >
-        <div className='flex flex-1 bg-white'>
-          <VideoPlayer
-            roomData={optimisticRoomData}
+      <RoomMessagesProvider roomId={roomId}>
+        <motion.div
+          className='h-full fixed bottom-0 flex flex-col md:flex-row w-full'
+          style={{ filter: blurBackground, transform: scaleBackground }}
+        >
+          <div className='flex flex-1 bg-white'>
+            <VideoPlayer
+              roomData={optimisticRoomData}
+              roomProfile={roomProfile}
+              localFile={localFile}
+            />
+          </div>
+          <ChatArea
             roomProfile={roomProfile}
-            localFile={localFile}
+            messages={messages}
+            roomId={roomId}
           />
-        </div>
-        <ChatArea
-          roomProfile={roomProfile}
-          messages={messages}
-          roomId={roomId}
-        />
-      </motion.div>
+        </motion.div>
+      </RoomMessagesProvider>
       <motion.div
         style={{ opacity: hideScrollIndicator }}
         className='fixed right-1/2 translate-x-1/2 md:translate-x-0 md:right-4 top-[80%] md:top-1/2 z-1 flex flex-col justify-end items-center gap-2 pointer-events-none'
