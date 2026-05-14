@@ -14,7 +14,6 @@ export function parseYouTubeIframeErrorCode(event: MessageEvent): number | null 
   let parsed: unknown
   try {
     parsed = JSON.parse(event.data)
-    console.log('Parsed:', parsed)
   } catch {
     return null
   }
