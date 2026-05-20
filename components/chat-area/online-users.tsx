@@ -68,7 +68,7 @@ export default function OnlineUsers({
           {onlineUsers.length} online
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='min-w-20 w-40' align='end'>
+      <PopoverContent className='min-w-20 w-fit' align='end'>
         <div className='space-y-2'>
           {onlineUsers.map((user) => (
             <p key={user.id} className='w-fit text-sm'>
