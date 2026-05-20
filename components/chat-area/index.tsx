@@ -3,7 +3,8 @@ import {
   useEffect,
   useRef,
   useOptimistic,
-  startTransition
+  startTransition,
+  type ReactNode
 } from 'react'
 import { cn } from '@/lib/utils'
 import { Tables } from '@/types/supabase'
@@ -20,11 +21,13 @@ import { useRoomMessages } from '../room-messages-provider'
 export default function ChatArea({
   roomProfile,
   messages,
-  roomId
+  roomId,
+  headerActions
 }: {
   roomProfile: Tables<'user'>
   messages: ModifiedMessageType
   roomId: string
+  headerActions?: ReactNode
 }) {
   const [optimisticMessages, addOptimisticMessages] = useOptimistic<
     ModifiedMessageType,
@@ -54,14 +57,18 @@ export default function ChatArea({
     <>
       <div className='bg-white h-full w-full md:w-[40vw] lg:w-[25vw] border-t md:border-l md:border-t-0 border-gray-200'>
         <div className='flex flex-col h-full'>
-          <ButtonGroup className='h-[61px] w-full flex px-3 items-center justify-end border-b border-gray-200'>
-            <OnlineUsers
-              roomId={roomId}
-              userId={roomProfile.id}
-              userName={roomProfile.name}
-            />
-            <SettingsModal roomProfile={roomProfile} />
-          </ButtonGroup>
+          <div className='flex items-center justify-between border-b border-gray-200 px-3'>
+            {headerActions}
+            <ButtonGroup className='h-[61px] w-full flex  items-center justify-end '>
+              <OnlineUsers
+                roomId={roomId}
+                userId={roomProfile.id}
+                userName={roomProfile.name}
+              />
+              <SettingsModal roomProfile={roomProfile} />
+            </ButtonGroup>
+          </div>
+
           <div className='relative flex flex-1'>
             <div
               ref={messagesRef}

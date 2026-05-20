@@ -82,7 +82,7 @@ export default function UpdateRoomForm({
   }, [localFile])
 
   return (
-    <div className='w-full max-w-md bg-card p-6 rounded-lg shadow-lg border'>
+    <div className='w-full max-w-md bg-card md:p-6 rounded-lg md:shadow-lg md:border'>
       <form className='flex flex-col gap-4' action={handleUrlSubmit}>
         <div className='flex flex-col gap-3'>
           <div className='flex gap-1 border rounded-md p-1 w-fit'>
