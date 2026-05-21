@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '../ui/button'
-import { Drawer, DrawerContent, DrawerTitle } from '../ui/drawer'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '../ui/drawer'
 import ChangeVideoForm, { CHANGE_VIDEO_TITLE } from '../change-video-form'
 
 type ChangeVideoModalProps = {
@@ -33,7 +33,9 @@ const ChangeVideoModal = ({
       </Button>
       <Drawer open={isOpen} onOpenChange={setIsOpen} direction='bottom'>
         <DrawerContent className='max-h-[85svh] pb-[max(1rem,env(safe-area-inset-bottom))]'>
-          <DrawerTitle className='sr-only'>{CHANGE_VIDEO_TITLE}</DrawerTitle>
+          <DrawerHeader>
+            <DrawerTitle className='text-lg'>{CHANGE_VIDEO_TITLE}</DrawerTitle>
+          </DrawerHeader>
           <div className='overflow-y-auto px-4 pb-4'>
             <ChangeVideoForm
               defaultVideoUrl={defaultVideoUrl}

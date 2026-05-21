@@ -2,13 +2,7 @@ import { useActionState, useState } from 'react'
 import { Button } from '../ui/button'
 import { Loader2, Settings } from 'lucide-react'
 import { Input } from '../ui/input'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle
-} from '../ui/drawer'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '../ui/drawer'
 import { Label } from '../ui/label'
 import { Tables } from '@/types/supabase'
 import { updateUserName } from '@/utils/server-actions'
@@ -66,15 +60,12 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
               : 'max-h-[85svh] pb-[max(1rem,env(safe-area-inset-bottom))]'
           )}
         >
-          <DrawerHeader className='text-left'>
-            <DrawerTitle className='text-xl'>Room Settings</DrawerTitle>
-            <DrawerDescription>
-              Update your username and manage your room settings.
-            </DrawerDescription>
+          <DrawerHeader>
+            <DrawerTitle className='text-lg'>Room Settings</DrawerTitle>
           </DrawerHeader>
           <div className='overflow-y-auto px-4 pb-4 space-y-8'>
             <div className='flex flex-col'>
-              <h3 className='font-semibold text-lg border-b pb-1 mb-4'>
+              <h3 className='font-semibold border-b pb-1 mb-4'>
                 Change username
               </h3>
               <form
@@ -108,7 +99,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
             </div>
             {isHost && (
               <div className='flex flex-col'>
-                <h3 className='font-semibold text-lg text-destructive border-b pb-1 mb-4'>
+                <h3 className='font-semibold text-destructive border-b pb-1 mb-4'>
                   Delete Room
                 </h3>
                 <p className='mb-3 text-sm text-pretty'>
