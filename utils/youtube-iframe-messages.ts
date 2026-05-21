@@ -25,3 +25,53 @@ export function parseYouTubeIframeErrorCode(event: MessageEvent): number | null 
   if (typeof o.data === 'number') return o.data
   return null
 }
+
+export type YouTubeIframeErrorDescription = {
+  title: string
+  description: string
+  showWatchOnYouTube: boolean
+}
+
+// https://developers.google.com/youtube/iframe_api_reference#onError
+export function describeYouTubeIframeError(
+  code: number
+): YouTubeIframeErrorDescription {
+  switch (code) {
+    case 2:
+      return {
+        title: 'Invalid video URL',
+        description:
+          'The video ID looks malformed. Double-check the link and try again.',
+        showWatchOnYouTube: false
+      }
+    case 5:
+      return {
+        title: 'Playback error',
+        description:
+          "YouTube's player ran into a problem. This usually clears up if you try again or pick another video.",
+        showWatchOnYouTube: true
+      }
+    case 100:
+      return {
+        title: 'Video unavailable',
+        description:
+          'This video was removed, set to private, or never existed.',
+        showWatchOnYouTube: false
+      }
+    case 101:
+    case 150:
+      return {
+        title: 'Embedding disabled',
+        description:
+          "The video owner doesn't allow playback outside YouTube — common for music videos and licensed content. Pick a different video, or watch it directly on YouTube.",
+        showWatchOnYouTube: true
+      }
+    default:
+      return {
+        title: 'This video cannot be played',
+        description:
+          'YouTube reported an unexpected playback error. Try a different video.',
+        showWatchOnYouTube: true
+      }
+  }
+}

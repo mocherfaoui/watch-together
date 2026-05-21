@@ -12,7 +12,7 @@ import {
   useState,
   useRef
 } from 'react'
-import { Download, Users, RefreshCw, FileX, AlertCircle } from 'lucide-react'
+import { Download, Users, RefreshCw, FileX } from 'lucide-react'
 
 import { trackEvent } from '@/utils'
 import {
@@ -26,12 +26,9 @@ import {
 } from '@vidstack/react'
 import { VideoLayout } from './video-layout'
 import FloatingMessages from './floating-messages'
+import YoutubeErrorOverlay from './youtube-error-overlay'
 import '@vidstack/react/player/styles/base.css'
 import { useWebTorrentDownload, formatSpeed } from '@/utils/webtorrent'
-import {
-  isYouTubePlayerUrl,
-  parseYouTubeIframeErrorCode
-} from '@/utils/youtube-iframe-messages'
 import { Button } from '../ui/button'
 
 export default function VideoPlayer({
@@ -56,15 +53,11 @@ export default function VideoPlayer({
 
   const { downloadTorrent, torrentState } = useWebTorrentDownload()
   const [showReplaceOption, setShowReplaceOption] = useState(false)
-  const [youtubeIframeError, setYoutubeIframeError] = useState<number | null>(
-    null
-  )
 
   const { video_url, id: roomId, torrent_uploader_id } = optimisticRoomData
 
   const isMagnetUri = video_url?.startsWith('magnet:')
   const isUploader = torrent_uploader_id === roomProfile.id
-  const isYoutube = !isMagnetUri && isYouTubePlayerUrl(video_url ?? '')
 
   useEffect(() => {
     const supabase = createClient()
@@ -128,26 +121,6 @@ export default function VideoPlayer({
       cancelled = true
     }
   }, [video_url, isMagnetUri, isUploader, downloadTorrent])
-
-  useEffect(() => {
-    setYoutubeIframeError(null)
-  }, [video_url])
-
-  useEffect(() => {
-    if (!isYoutube || !video_url) return
-
-    const onMessage = (event: MessageEvent) => {
-      const code = parseYouTubeIframeErrorCode(event)
-
-      if (code != null) {
-        console.warn('[youtube] onError', code)
-        setYoutubeIframeError(code)
-      }
-    }
-
-    window.addEventListener('message', onMessage)
-    return () => window.removeEventListener('message', onMessage)
-  }, [isYoutube, video_url])
 
   function onProviderChange(provider: MediaProviderAdapter | null) {
     if (isYouTubeProvider(provider)) {
@@ -214,31 +187,7 @@ export default function VideoPlayer({
             </Button>
           </div>
         )}
-        {youtubeIframeError !== null && (
-          <div className='absolute inset-0 flex flex-col justify-center items-center bg-black/80 backdrop-blur-xl z-11'>
-            <AlertCircle className='h-8 w-8 mb-3 text-red-400' />
-            <p className='text-lg text-white mb-2'>
-              This video cannot be played
-            </p>
-            <p className='text-sm text-gray-400 mb-4 text-center px-4 max-w-md'>
-              YouTube reported a playback error (code {youtubeIframeError}).
-              Embedding may be disabled for this video, or it may be
-              unavailable.
-            </p>
-            <Button
-              onClick={() =>
-                window.scrollTo({
-                  top: document.body.scrollHeight,
-                  behavior: 'smooth'
-                })
-              }
-              variant='outline'
-            >
-              <RefreshCw className='h-4 w-4' />
-              Replace
-            </Button>
-          </div>
-        )}
+        <YoutubeErrorOverlay videoUrl={video_url} />
 
         <div className='relative h-full'>
           <MediaPlayer
