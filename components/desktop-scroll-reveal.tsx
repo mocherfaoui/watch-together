@@ -1,13 +1,10 @@
 'use client'
 
 import { motion, useScroll, useTransform } from 'motion/react'
-import {
-  useLayoutEffect,
-  useRef,
-  useState,
-  type ReactNode
-} from 'react'
+import { useLayoutEffect, useRef, type ReactNode } from 'react'
 import ChangeVideoForm from './change-video-form'
+import { useMediaMatch } from '@/hooks/useMediaMatch'
+import { useIsFullscreen } from '@/hooks/useIsFullscreen'
 
 type DesktopScrollRevealProps = {
   children: ReactNode
@@ -25,15 +22,9 @@ export default function DesktopScrollReveal({
   onUrlSubmit,
   onFileReady
 }: DesktopScrollRevealProps) {
-  const [active, setActive] = useState(false)
-
-  useLayoutEffect(() => {
-    const mql = window.matchMedia('(min-width: 768px)')
-    setActive(mql.matches)
-    const onChange = (e: MediaQueryListEvent) => setActive(e.matches)
-    mql.addEventListener('change', onChange)
-    return () => mql.removeEventListener('change', onChange)
-  }, [])
+  const isWideViewport = useMediaMatch('(min-width: 768px)')
+  const isFullscreen = useIsFullscreen()
+  const active = isWideViewport && !isFullscreen
 
   const formSectionRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll()
@@ -45,6 +36,10 @@ export default function DesktopScrollReveal({
       'blur(4px) brightness(0.8)',
       'blur(10px) brightness(0.4)'
     ]
+  )
+
+  const filter = useTransform(() =>
+    active ? blurBackground.get() : 'blur(0px) brightness(1)'
   )
 
   const hideScrollIndicator = useTransform(
@@ -72,7 +67,7 @@ export default function DesktopScrollReveal({
     <>
       <motion.div
         className='h-full fixed bottom-0 flex flex-col md:flex-row w-full'
-        style={active ? { filter: blurBackground } : undefined}
+        style={{ filter }}
       >
         {children}
       </motion.div>
