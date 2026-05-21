@@ -16,9 +16,11 @@ import { Download, Users, RefreshCw, FileX, AlertCircle } from 'lucide-react'
 
 import { trackEvent } from '@/utils'
 import {
+  isYouTubeProvider,
   MediaPlayer,
   MediaPlayerInstance,
   MediaProvider,
+  MediaProviderAdapter,
   Poster,
   useMediaStore
 } from '@vidstack/react'
@@ -137,12 +139,21 @@ export default function VideoPlayer({
     const onMessage = (event: MessageEvent) => {
       const code = parseYouTubeIframeErrorCode(event)
 
-      if (code != null) setYoutubeIframeError(code)
+      if (code != null) {
+        console.warn('[youtube] onError', code)
+        setYoutubeIframeError(code)
+      }
     }
 
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
   }, [isYoutube, video_url])
+
+  function onProviderChange(provider: MediaProviderAdapter | null) {
+    if (isYouTubeProvider(provider)) {
+      provider.cookies = true
+    }
+  }
 
   return (
     <div className='flex flex-col flex-1'>
@@ -232,6 +243,7 @@ export default function VideoPlayer({
         <div className='relative h-full'>
           <MediaPlayer
             ref={videoPlayerRef}
+            onProviderChange={onProviderChange}
             src={
               isMagnetUri
                 ? isUploader && localFile
