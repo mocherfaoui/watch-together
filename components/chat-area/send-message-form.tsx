@@ -1,5 +1,4 @@
 import { startTransition, useRef, useState } from 'react'
-import { cn } from '@/lib/utils'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { SendHorizontal } from 'lucide-react'
@@ -56,11 +55,7 @@ export default function SendMessageForm({
   return (
     <form
       ref={formRef}
-      className={cn({
-        'aqua-chrome p-3 flex flex-col gap-2 border-t border-hairline':
-          true,
-        'pt-2': formState?.error
-      })}
+      className='aqua-chrome py-2 px-3 flex flex-col gap-2 border-t border-hairline'
       onSubmit={(event) => {
         event.preventDefault()
         setFormState(initialState)
@@ -70,9 +65,7 @@ export default function SendMessageForm({
       }}
     >
       {formState?.error && (
-        <p className='text-sm text-destructive'>
-          {formState?.error}
-        </p>
+        <p className='text-sm text-destructive'>{formState?.error}</p>
       )}
       <div className='flex gap-2'>
         <Input

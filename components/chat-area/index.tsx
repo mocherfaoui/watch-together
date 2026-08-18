@@ -45,9 +45,9 @@ export default function ChatArea({
     <>
       <div className='h-full w-full md:w-[40vw] lg:w-[25vw] border-t md:border-l md:border-t-0 border-hairline'>
         <div className='flex flex-col h-full'>
-          <div className='aqua-chrome flex items-center justify-between border-b border-hairline px-3'>
+          <div className='aqua-chrome flex h-12 items-center justify-between border-b border-hairline px-3'>
             {headerActions}
-            <ButtonGroup className='h-11 w-full flex items-center justify-end'>
+            <ButtonGroup className='w-full flex items-center justify-end'>
               <OnlineUsers
                 roomId={roomId}
                 userId={roomProfile.id}
@@ -62,7 +62,7 @@ export default function ChatArea({
               ref={messagesRef}
               className='absolute top-0 left-0 h-full w-full flex flex-col-reverse overflow-y-auto px-3'
             >
-              <div className='flex flex-col gap-1 py-3'>
+              <div className='flex flex-col gap-1 py-2'>
                 {messages?.map((message) => {
                   const isPlaybackMessage =
                     message.content === PLAYBACK_MESSAGE.played ||
@@ -73,7 +73,6 @@ export default function ChatArea({
                       key={message.id}
                       className='text-sm text-pretty h-full inline-flex items-baseline'
                     >
-                      <MessageTimestamp timestamp={message.sent_at} />
                       <div className='h-full inline-block'>
                         <span className='inline-flex items-baseline mr-1'>
                           <span
@@ -85,7 +84,7 @@ export default function ChatArea({
                           >
                             {message.sender?.name}
                           </span>
-                          :
+                          <MessageTimestamp timestamp={message.sent_at} />:
                         </span>
                         <span
                           className={cn({

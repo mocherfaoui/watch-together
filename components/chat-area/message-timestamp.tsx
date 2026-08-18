@@ -6,8 +6,10 @@ export default function MessageTimestamp({
   timestamp: string | null
 }) {
   return (
-    <span className='h-full inline-flex justify-center text-xs text-muted-foreground tabular-nums mr-2 min-w-8'>
+    <span className='h-full inline-flex justify-start text-xs text-muted-foreground tabular-nums'>
+      (
       <RelativeTime datetime={timestamp ?? undefined} />
+      )
     </span>
   )
 }

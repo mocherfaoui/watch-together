@@ -8,7 +8,7 @@ export default function RoomLoadingState() {
       </div>
       <div className='h-full w-full md:w-[40vw] lg:w-[25vw] border-t md:border-l md:border-t-0 border-hairline'>
         <div className='flex flex-col h-full'>
-          <div className='aqua-chrome flex h-11 px-3 items-center justify-end border-b border-hairline'>
+          <div className='aqua-chrome flex h-12 px-3 items-center justify-end border-b border-hairline'>
             <Skeleton className='h-8 w-20.75 aqua-push' />
           </div>
 
@@ -19,7 +19,7 @@ export default function RoomLoadingState() {
             <Skeleton className='h-3.5 w-3/4 bg-foreground/10' />
           </div>
 
-          <div className='aqua-chrome flex gap-2 border-t border-hairline p-3'>
+          <div className='aqua-chrome flex gap-3 border-t border-hairline px-3 py-2'>
             <Skeleton className='h-8 flex-1 aqua-field' />
             <Skeleton className='size-8 shrink-0 aqua-default' />
           </div>
