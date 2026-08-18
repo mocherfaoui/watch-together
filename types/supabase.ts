@@ -60,7 +60,9 @@ export type Database = {
           expires_at: string | null
           host_id: string | null
           id: string
+          is_playing: boolean
           is_streaming: boolean
+          playback_version: number
           stream_id: string | null
           stream_input: string | null
           stream_output: string | null
@@ -74,7 +76,9 @@ export type Database = {
           expires_at?: string | null
           host_id?: string | null
           id?: string
+          is_playing?: boolean
           is_streaming?: boolean
+          playback_version?: number
           stream_id?: string | null
           stream_input?: string | null
           stream_output?: string | null
@@ -88,7 +92,9 @@ export type Database = {
           expires_at?: string | null
           host_id?: string | null
           id?: string
+          is_playing?: boolean
           is_streaming?: boolean
+          playback_version?: number
           stream_id?: string | null
           stream_input?: string | null
           stream_output?: string | null
@@ -154,6 +160,10 @@ export type Database = {
     }
     Functions: {
       generate_custom_uuid: { Args: never; Returns: string }
+      set_playback_state: {
+        Args: { p_is_playing: boolean; p_room_id: string }
+        Returns: { is_playing: boolean; playback_version: number }[]
+      }
     }
     Enums: {
       [_ in never]: never

@@ -15,6 +15,17 @@ export type ModifiedMessageType =
     })[]
   | null
 
+export type PlaybackStatePayload = {
+  isPlaying: boolean
+  version: number
+  userId: string
+}
+
+export const PLAYBACK_MESSAGE = {
+  played: 'played the video',
+  paused: 'paused the video'
+} as const
+
 export type BroadcastMessage = {
   room: string
   event: 'new-message' | 'playback-state' | 'room-updates'
@@ -22,6 +33,6 @@ export type BroadcastMessage = {
     | (NonNullableKeys<Omit<Tables<'message'>, 'sender'>> & {
         sender: Tables<'user'>
       })
-    | { isPlaying: boolean }
+    | PlaybackStatePayload
     | Partial<Tables<'room'>>
 }

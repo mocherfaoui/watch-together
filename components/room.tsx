@@ -30,6 +30,13 @@ export default function Room({
     roomData,
     (state, newState) => ({ ...state, ...newState }) as Tables<'room'>
   )
+  const [optimisticMessages, addOptimisticMessages] = useOptimistic<
+    ModifiedMessageType,
+    object
+  >(
+    messages,
+    (state, newState) => [...(state ?? []), newState] as ModifiedMessageType
+  )
   const [localFile, setLocalFile] = useState<{
     url: string
     type: string
@@ -77,17 +84,19 @@ export default function Room({
           onUrlSubmit={handleUrlSubmit}
           onFileReady={handleFileReady}
         >
-          <div className='flex flex-1 bg-white'>
+          <div className='flex flex-1 bg-black'>
             <VideoPlayer
               roomData={optimisticRoomData}
               roomProfile={roomProfile}
               localFile={localFile}
+              addOptimisticMessages={addOptimisticMessages}
             />
           </div>
           <ChatArea
             roomProfile={roomProfile}
-            messages={messages}
+            messages={optimisticMessages}
             roomId={roomId}
+            addOptimisticMessages={addOptimisticMessages}
             headerActions={
               <ChangeVideoModal
                 defaultVideoUrl={optimisticRoomData.video_url}

@@ -154,6 +154,58 @@ export const broadcastMessage = async ({
   supabase.removeChannel(channel)
 }
 
+export const setPlaybackState = async (
+  roomId: string,
+  isPlaying: boolean,
+  roomProfile: Tables<'user'>,
+  messageId: string
+) => {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase.rpc('set_playback_state', {
+    p_room_id: roomId,
+    p_is_playing: isPlaying
+  })
+
+  if (error || !data?.[0]) {
+    console.error('Error updating playback state:', error)
+    return null
+  }
+
+  const { playback_version, is_playing } = data[0]
+
+  await broadcastMessage({
+    room: `room:${roomId}:updates`,
+    event: 'playback-state',
+    payload: {
+      isPlaying: is_playing,
+      version: playback_version,
+      userId: roomProfile.id
+    }
+  })
+
+  const newMessage: Tables<'message'> = {
+    id: messageId,
+    content: isPlaying ? 'played the video' : 'paused the video',
+    sender: roomProfile.id,
+    room_id: roomId,
+    sent_at: new Date().toISOString()
+  }
+
+  const messageResult = await sendMessage(newMessage, roomProfile)
+
+  if (messageResult?.error) {
+    console.error('Error inserting playback message:', messageResult.error)
+    return null
+  }
+
+  return {
+    isPlaying: is_playing,
+    version: playback_version,
+    message: newMessage
+  }
+}
+
 export const sendMessage = async (
   newMessage: Tables<'message'>,
   roomProfile: Tables<'user'>
