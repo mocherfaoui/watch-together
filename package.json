@@ -10,7 +10,7 @@
     "update-types": "npx supabase gen types --lang=typescript --project-id \"$PROJECT_REF\" > types/supabase.ts"
   },
   "dependencies": {
-    "@github/relative-time-element": "^4.4.4",
+    "@github/relative-time-element": "^5.3.1",
     "@lit/react": "^1.0.8",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-dialog": "^1.1.4",
