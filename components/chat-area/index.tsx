@@ -1,10 +1,5 @@
 'use client'
-import {
-  useEffect,
-  useRef,
-  startTransition,
-  type ReactNode
-} from 'react'
+import { useEffect, useRef, startTransition, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { Tables } from '@/types/supabase'
 import { revalidatePathOnServer } from '@/utils/server-actions'
@@ -69,14 +64,15 @@ export default function ChatArea({
               className='absolute top-0 left-0 h-full w-full flex flex-col-reverse overflow-y-auto px-3'
             >
               <div className='flex flex-col gap-1 pt-1'>
-                {messages
-                  ?.map((message) => {
-                    const isPlaybackMessage =
-                      message.content === PLAYBACK_MESSAGE.played ||
-                      message.content === PLAYBACK_MESSAGE.paused
+                {messages?.map((message) => {
+                  const isPlaybackMessage =
+                    message.content === PLAYBACK_MESSAGE.played ||
+                    message.content === PLAYBACK_MESSAGE.paused
 
-                    return (
-                      <div key={message.id} className='text-sm text-pretty'>
+                  return (
+                    <div key={message.id} className='text-sm text-pretty h-full inline-flex items-baseline'>
+                      <MessageTimestamp timestamp={message.sent_at} />
+                      <div className='h-full inline-block'>
                         <span className='inline-flex items-baseline mr-1'>
                           <span
                             className={cn({
@@ -87,7 +83,7 @@ export default function ChatArea({
                           >
                             {message.sender?.name}
                           </span>
-                          <MessageTimestamp timestamp={message.sent_at} />:
+                          :
                         </span>
                         <span
                           className={cn({
@@ -97,8 +93,9 @@ export default function ChatArea({
                           {message.content}
                         </span>
                       </div>
-                    )
-                  })}
+                    </div>
+                  )
+                })}
                 <div ref={messagesBottom}></div>
               </div>
             </div>

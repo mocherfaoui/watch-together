@@ -25,6 +25,7 @@ function RelativeTime({
       {...props}
       date={date}
       no-title={noTitle ? '' : undefined}
+      format='micro'
     >
       {children || date?.toLocaleDateString('en', localeOptions) || ''}
     </RelativeTimeComponent>
