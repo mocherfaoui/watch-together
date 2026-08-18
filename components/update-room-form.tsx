@@ -120,7 +120,6 @@ export default function UpdateRoomForm({
                   id='video_url'
                   required={true}
                   defaultValue={defaultVideoUrl}
-                  className='transition-all focus:ring-2 focus:ring-primary/20'
                 />
               </div>
             </div>
@@ -136,10 +135,7 @@ export default function UpdateRoomForm({
                     id='file_input'
                     accept='video/*,audio/*'
                     onChange={handleFileSelect}
-                    className={cn(
-                      'transition-all focus:ring-2 focus:ring-primary/20',
-                      isHashing && 'h-10'
-                    )}
+                    className={cn(isHashing && 'h-9')}
                   />
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
@@ -183,7 +179,7 @@ export default function UpdateRoomForm({
                       </div>
                     )}
                     {torrentState.error && (
-                      <p className='text-xs text-red-500'>
+                      <p className='text-xs text-destructive'>
                         {torrentState.error}
                       </p>
                     )}

@@ -57,7 +57,8 @@ export default function SendMessageForm({
     <form
       ref={formRef}
       className={cn({
-        'p-3 flex flex-col gap-2 border-t border-gray-200': true,
+        'aqua-chrome p-3 flex flex-col gap-2 border-t border-hairline':
+          true,
         'pt-2': formState?.error
       })}
       onSubmit={(event) => {
@@ -69,7 +70,7 @@ export default function SendMessageForm({
       }}
     >
       {formState?.error && (
-        <p className='text-base md:text-sm text-destructive'>
+        <p className='text-sm text-destructive'>
           {formState?.error}
         </p>
       )}

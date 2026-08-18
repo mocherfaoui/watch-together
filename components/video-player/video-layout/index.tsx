@@ -12,24 +12,25 @@ export function VideoLayout() {
   return (
     <div className='text-white'>
       <Gestures />
-      <Captions className='vds-captions media-preview:opacity-0 media-controls:bottom-[85px] media-captions:opacity-100 absolute inset-0 bottom-2 z-10 select-none wrap-break-word opacity-0 transition-[opacity,bottom] duration-300' />
-      <Controls.Root className='media-controls:opacity-100 absolute inset-0 z-10 flex h-full w-full flex-col bg-linear-to-t from-black/10 to-transparent opacity-0 transition-opacity'>
+      <Captions className='vds-captions media-preview:opacity-0 media-controls:bottom-[104px] media-captions:opacity-100 absolute inset-0 bottom-2 z-10 select-none wrap-break-word opacity-0 transition-[opacity,bottom] duration-300' />
+      <Controls.Root className='media-controls:opacity-100 absolute inset-0 z-10 flex h-full w-full flex-col opacity-0 transition-opacity'>
         <div className='flex-1' />
-        <div className='relative'>
-          <div className='bg-linear-to-b from-transparent to-neutral-900/90 z-[-1] absolute bottom-0 w-full h-[calc(100%+15px)]' />
-          <Controls.Group className='flex w-full items-center px-2'>
-            <Sliders.Time />
-          </Controls.Group>
-          <Controls.Group className='-mt-0.5 flex w-full items-center px-2 pb-2'>
-            <Buttons.Play tooltipPlacement='top start' />
-            <Buttons.Mute tooltipPlacement='top' />
-            <Sliders.Volume />
-            <TimeGroup />
-            <Title />
-            <Buttons.Caption tooltipPlacement='top' />
-            <Menus.Settings placement='top end' tooltipPlacement='top' />
-            <Buttons.Fullscreen tooltipPlacement='top end' />
-          </Controls.Group>
+        <div className='px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]'>
+          <div className='aqua-player-chrome rounded-[8px] px-2 pb-1.5 pt-1'>
+            <Controls.Group className='flex w-full items-center'>
+              <Sliders.Time />
+            </Controls.Group>
+            <Controls.Group className='-mt-1 flex w-full items-center'>
+              <Buttons.Play tooltipPlacement='top start' />
+              <Buttons.Mute tooltipPlacement='top' />
+              <Sliders.Volume />
+              <TimeGroup />
+              <Title />
+              <Buttons.Caption tooltipPlacement='top' />
+              <Menus.Settings placement='top end' tooltipPlacement='top' />
+              <Buttons.Fullscreen tooltipPlacement='top end' />
+            </Controls.Group>
+          </div>
         </div>
       </Controls.Root>
     </div>

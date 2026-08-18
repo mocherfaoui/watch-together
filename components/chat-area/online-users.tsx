@@ -64,7 +64,7 @@ export default function OnlineUsers({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant='outline' className='text-sm'>
+        <Button variant='outline'>
           {onlineUsers.length} online
         </Button>
       </PopoverTrigger>

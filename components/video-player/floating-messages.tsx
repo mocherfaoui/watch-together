@@ -75,7 +75,7 @@ export default function FloatingMessages({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className='text-sm text-right text-white wrap-anywhere [text-shadow:0_1px_2px_rgba(0,0,0,0.85)]'
+            className='text-sm text-right text-white wrap-anywhere [text-shadow:0_1px_2px_hsl(0_0%_0%/0.85)]'
           >
             <span className='font-semibold mr-1'>{m.sender}:</span>
             <span>{m.content}</span>

@@ -6,7 +6,7 @@ export default function MessageTimestamp({
   timestamp: string | null
 }) {
   return (
-    <span className='text-xs text-gray-600'>
+    <span className='text-xs text-muted-foreground tabular-nums'>
       <span>(</span>
       <RelativeTime datetime={timestamp ?? undefined}></RelativeTime>
       <span>)</span>

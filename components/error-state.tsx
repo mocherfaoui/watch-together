@@ -6,10 +6,10 @@ import { RefreshCw } from 'lucide-react'
 
 export default function ErrorState() {
   return (
-    <div className='flex flex-col items-center justify-center h-screen gap-4 p-4'>
+    <div className='aqua-linen flex flex-col items-center justify-center h-dvh gap-4 p-4'>
       <div className='text-center space-y-2'>
-        <h1 className='text-2xl font-bold'>Something went wrong</h1>
-        <p className='text-muted-foreground'>
+        <h1 className='text-2xl font-bold text-balance'>Something went wrong</h1>
+        <p className='text-muted-foreground text-pretty'>
           We couldn&apos;t create your room. Please try again.
         </p>
       </div>

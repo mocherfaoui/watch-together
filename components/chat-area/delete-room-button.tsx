@@ -78,10 +78,9 @@ export default function DeleteRoomButton({ roomId }: DeleteRoomButtonProps) {
         data-umami-event='Delete Room (long press)'
         className={cn(
           'relative w-fit select-none touch-none overflow-hidden',
-          'inline-flex items-center justify-center gap-2 h-9 px-4 rounded-md text-sm font-medium',
-          'bg-destructive text-destructive-foreground shadow-sm',
-          'disabled:opacity-60 disabled:pointer-events-none',
-          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
+          'inline-flex items-center justify-center gap-2 h-8 px-4 rounded-md text-sm font-normal',
+          'aqua-danger aqua-focus text-destructive-foreground',
+          'disabled:opacity-60 disabled:pointer-events-none'
         )}
       >
         <motion.span

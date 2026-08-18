@@ -25,7 +25,7 @@ export interface MediaButtonProps {
 }
 
 export const buttonClass =
-  'group ring-media-focus relative inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-md outline-none ring-inset hover:bg-white/20 data-focus:ring-4'
+  'group ring-media-focus relative inline-flex size-8 cursor-pointer items-center justify-center rounded-md outline-none ring-inset hover:bg-white/15 active:bg-black/40 data-focus:ring-4'
 
 export const tooltipClass =
   'animate-out fade-out slide-out-to-bottom-2 data-[visible]:animate-in data-[visible]:fade-in data-[visible]:slide-in-from-bottom-4 z-10 rounded-sm bg-black/90 px-2 py-0.5 text-sm font-medium text-white parent-data-open:hidden'
@@ -37,9 +37,9 @@ export function Play({ tooltipPlacement }: MediaButtonProps) {
       <Tooltip.Trigger asChild>
         <PlayButton className={buttonClass}>
           {isPaused ? (
-            <PlayIcon className='fill-current w-6 h-6' />
+            <PlayIcon className='fill-current size-5' />
           ) : (
-            <Pause className=' fill-current w-6 h-6' />
+            <Pause className=' fill-current size-5' />
           )}
         </PlayButton>
       </Tooltip.Trigger>
@@ -58,11 +58,11 @@ export function Mute({ tooltipPlacement }: MediaButtonProps) {
       <Tooltip.Trigger asChild>
         <MuteButton className={buttonClass}>
           {isMuted || volume == 0 ? (
-            <VolumeOff className='w-6 h-6' />
+            <VolumeOff className='size-5' />
           ) : volume < 0.5 ? (
-            <Volume1 className='w-6 h-6' />
+            <Volume1 className='size-5' />
           ) : (
-            <Volume2 className='w-6 h-6' />
+            <Volume2 className='size-5' />
           )}
         </MuteButton>
       </Tooltip.Trigger>
@@ -85,9 +85,9 @@ export function Caption({ tooltipPlacement }: MediaButtonProps) {
       <Tooltip.Trigger asChild>
         <CaptionButton className={buttonClass}>
           {isOn ? (
-            <CaptionsOff className='w-6 h-6' />
+            <CaptionsOff className='size-5' />
           ) : (
-            <CaptionsIcon className='w-6 h-6' />
+            <CaptionsIcon className='size-5' />
           )}
         </CaptionButton>
       </Tooltip.Trigger>
@@ -105,9 +105,9 @@ export function Fullscreen({ tooltipPlacement }: MediaButtonProps) {
       <Tooltip.Trigger asChild>
         <FullscreenButton className={buttonClass}>
           {isActive ? (
-            <Minimize className='w-6 h-6' />
+            <Minimize className='size-5' />
           ) : (
-            <Maximize className='w-6 h-6' />
+            <Maximize className='size-5' />
           )}
         </FullscreenButton>
       </Tooltip.Trigger>

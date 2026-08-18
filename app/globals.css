@@ -9,43 +9,47 @@
 @custom-variant group-hocus (.group:hover &, .group:focus-visible &);
 
 @theme {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
+  --font-sans: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma,
+    Verdana, sans-serif;
+  --font-mono: Monaco, Menlo, "Courier New", monospace;
 
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
+  --text-xs: 11px;
+  --text-xs--line-height: 1.45;
+  --text-sm: 13px;
+  --text-sm--line-height: 1.4;
 
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(0 0% 0%);
 
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(0 0% 0%);
 
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-popover: hsl(0 0% 96%);
+  --color-popover-foreground: hsl(0 0% 0%);
 
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-primary: hsl(212 77% 47%);
+  --color-primary-foreground: hsl(0 0% 100%);
 
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-secondary: hsl(0 0% 88%);
+  --color-secondary-foreground: hsl(0 0% 0%);
 
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-muted: hsl(220 14% 87%);
+  --color-muted-foreground: hsl(0 0% 40%);
 
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
+  --color-accent: hsl(217 66% 53%);
+  --color-accent-foreground: hsl(0 0% 100%);
 
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
+  --color-destructive: hsl(6 63% 46%);
+  --color-destructive-foreground: hsl(0 0% 100%);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
+  --color-border: hsl(0 0% 78%);
+  --color-hairline: hsl(0 0% 64%);
+  --color-input: hsl(0 0% 66%);
+  --color-ring: hsl(209 56% 60%);
+
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 5px;
 
   --animate-fade-up: fade-up 2s ease-out infinite;
 
@@ -59,57 +63,77 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 41.05 16.81% 22.16%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 13.93 70% 47.06%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --chrome-top: hsl(0 0% 85%);
+    --chrome-bottom: hsl(0 0% 75%);
+    --chrome-highlight: hsl(0 0% 100% / 0.65);
+
+    --sidebar-top: hsl(216 19% 89%);
+    --sidebar-bottom: hsl(217 17% 85%);
+
+    --push-top: hsl(0 0% 100%);
+    --push-bottom: hsl(0 0% 89%);
+    --push-border: hsl(0 0% 65%);
+    --push-highlight: hsl(0 0% 100% / 0.9);
+    --push-pressed-top: hsl(0 0% 81%);
+    --push-pressed-bottom: hsl(0 0% 91%);
+
+    --aqua-top: hsl(209 88% 67%);
+    --aqua-bottom: hsl(212 77% 47%);
+    --aqua-border: hsl(212 80% 40%);
+    --aqua-pressed-top: hsl(212 78% 43%);
+    --aqua-pressed-bottom: hsl(210 79% 61%);
+    --aqua-focus: hsl(208 59% 60% / 0.6);
+    --aqua-focus-border: hsl(210 50% 57%);
+
+    --danger-top: hsl(7 67% 64%);
+    --danger-bottom: hsl(6 63% 46%);
+    --danger-border: hsl(7 66% 37%);
+    --danger-pressed-top: hsl(7 66% 41%);
+    --danger-pressed-bottom: hsl(6 60% 53%);
+
+    --field-bg: hsl(0 0% 100%);
+    --field-border: hsl(0 0% 63%);
+
+    --player-top: hsl(0 0% 17%);
+    --player-bottom: hsl(0 0% 10%);
+    --player-highlight: hsl(0 0% 100% / 0.08);
+
+    --knob-top: hsl(0 0% 100%);
+    --knob-bottom: hsl(0 0% 86%);
+    --knob-border: hsl(0 0% 55%);
   }
+
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --color-background: hsl(0 0% 13%);
+    --color-foreground: hsl(0 0% 96%);
+    --color-card: hsl(0 0% 16%);
+    --color-card-foreground: hsl(0 0% 96%);
+    --color-popover: hsl(0 0% 14%);
+    --color-popover-foreground: hsl(0 0% 96%);
+    --color-secondary: hsl(0 0% 24%);
+    --color-secondary-foreground: hsl(0 0% 96%);
+    --color-muted: hsl(0 0% 22%);
+    --color-muted-foreground: hsl(0 0% 65%);
+    --color-border: hsl(0 0% 30%);
+    --color-hairline: hsl(0 0% 12%);
+    --color-input: hsl(0 0% 34%);
+
+    --chrome-top: hsl(0 0% 29%);
+    --chrome-bottom: hsl(0 0% 21%);
+    --chrome-highlight: hsl(0 0% 100% / 0.14);
+
+    --sidebar-top: hsl(204 5% 21%);
+    --sidebar-bottom: hsl(204 5% 18%);
+
+    --push-top: hsl(0 0% 34%);
+    --push-bottom: hsl(0 0% 24%);
+    --push-border: hsl(0 0% 12%);
+    --push-highlight: hsl(0 0% 100% / 0.14);
+    --push-pressed-top: hsl(0 0% 18%);
+    --push-pressed-bottom: hsl(0 0% 24%);
+
+    --field-bg: hsl(0 0% 11%);
+    --field-border: hsl(0 0% 7%);
   }
 
   * {
@@ -117,7 +141,13 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
   }
   html {
     scrollbar-width: none;
@@ -138,6 +168,153 @@
     outline: none;
     box-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) hsl(208 100% 56%);
   }
+}
+
+@utility aqua-chrome {
+  background-image: linear-gradient(
+    to bottom,
+    var(--chrome-top),
+    var(--chrome-bottom)
+  );
+  box-shadow: inset 0 1px 0 var(--chrome-highlight);
+}
+
+@utility aqua-sidebar {
+  background-image: linear-gradient(
+    to bottom,
+    var(--sidebar-top),
+    var(--sidebar-bottom)
+  );
+}
+
+@utility aqua-push {
+  background-image: linear-gradient(
+    to bottom,
+    var(--push-top),
+    var(--push-bottom)
+  );
+  border: 1px solid var(--push-border);
+  box-shadow:
+    inset 0 1px 0 var(--push-highlight),
+    0 1px 1px hsl(0 0% 0% / 0.12);
+
+  &:active:not(:disabled) {
+    background-image: linear-gradient(
+      to bottom,
+      var(--push-pressed-top),
+      var(--push-pressed-bottom)
+    );
+    box-shadow: inset 0 1px 2px hsl(0 0% 0% / 0.22);
+  }
+}
+
+@utility aqua-default {
+  background-image: linear-gradient(
+    to bottom,
+    var(--aqua-top),
+    var(--aqua-bottom)
+  );
+  border: 1px solid var(--aqua-border);
+  text-shadow: 0 -1px 0 hsl(0 0% 0% / 0.25);
+  box-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / 0.45),
+    0 1px 1px hsl(0 0% 0% / 0.15);
+
+  &:active:not(:disabled) {
+    background-image: linear-gradient(
+      to bottom,
+      var(--aqua-pressed-top),
+      var(--aqua-pressed-bottom)
+    );
+    box-shadow: inset 0 1px 2px hsl(0 0% 0% / 0.25);
+  }
+}
+
+@utility aqua-fill {
+  background-image: linear-gradient(
+    to bottom,
+    var(--aqua-top),
+    var(--aqua-bottom)
+  );
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.5);
+}
+
+@utility aqua-track {
+  background-color: hsl(0 0% 0% / 0.55);
+  box-shadow: inset 0 1px 2px hsl(0 0% 0% / 0.55);
+}
+
+@utility aqua-knob {
+  background-image: linear-gradient(
+    to bottom,
+    var(--knob-top),
+    var(--knob-bottom)
+  );
+  border: 1px solid var(--knob-border);
+  box-shadow: 0 1px 2px hsl(0 0% 0% / 0.5);
+}
+
+@utility aqua-danger {
+  background-image: linear-gradient(
+    to bottom,
+    var(--danger-top),
+    var(--danger-bottom)
+  );
+  border: 1px solid var(--danger-border);
+  text-shadow: 0 -1px 0 hsl(0 0% 0% / 0.25);
+  box-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / 0.35),
+    0 1px 1px hsl(0 0% 0% / 0.15);
+
+  &:active:not(:disabled) {
+    background-image: linear-gradient(
+      to bottom,
+      var(--danger-pressed-top),
+      var(--danger-pressed-bottom)
+    );
+    box-shadow: inset 0 1px 2px hsl(0 0% 0% / 0.25);
+  }
+}
+
+@utility aqua-field {
+  background-color: var(--field-bg);
+  border: 1px solid var(--field-border);
+  box-shadow: inset 0 1px 2px hsl(0 0% 0% / 0.13);
+}
+
+@utility aqua-focus {
+  &:focus-visible {
+    outline: none;
+    border-color: var(--aqua-focus-border);
+    box-shadow: 0 0 0 3px var(--aqua-focus);
+  }
+}
+
+@utility aqua-player-chrome {
+  background-image: linear-gradient(
+    to bottom,
+    var(--player-top),
+    var(--player-bottom)
+  );
+  border: 1px solid hsl(0 0% 0%);
+  box-shadow:
+    inset 0 1px 0 var(--player-highlight),
+    0 2px 6px hsl(0 0% 0% / 0.5);
+}
+
+@utility aqua-well {
+  box-shadow: inset 0 1px 2px hsl(0 0% 0% / 0.08);
+}
+
+@utility aqua-linen {
+  background-color: hsl(34 15% 81%);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    hsl(0 0% 100% / 0.35) 0px,
+    hsl(0 0% 100% / 0.35) 1px,
+    hsl(0 0% 0% / 0.03) 1px,
+    hsl(0 0% 0% / 0.03) 3px
+  );
 }
 
 @custom-variant parent-data-open (.parent[data-open] > &);

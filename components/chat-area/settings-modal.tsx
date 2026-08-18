@@ -61,11 +61,11 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
           )}
         >
           <DrawerHeader>
-            <DrawerTitle className='text-lg'>Room Settings</DrawerTitle>
+            <DrawerTitle>Room Settings</DrawerTitle>
           </DrawerHeader>
-          <div className='overflow-y-auto px-4 pb-4 space-y-8'>
+          <div className='overflow-y-auto p-4 space-y-8'>
             <div className='flex flex-col'>
-              <h3 className='font-semibold border-b pb-1 mb-4'>
+              <h3 className='text-sm font-bold border-b pb-1 mb-4'>
                 Change username
               </h3>
               <form
@@ -74,7 +74,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
               >
                 <Label htmlFor='new_username'>Current Username</Label>
                 {updateUserNameFormState?.error && (
-                  <p className='text-base md:text-sm text-destructive'>
+                  <p className='text-sm text-destructive'>
                     {updateUserNameFormState?.error}
                   </p>
                 )}
@@ -99,7 +99,7 @@ const SettingsModal = ({ roomProfile }: { roomProfile: Tables<'user'> }) => {
             </div>
             {isHost && (
               <div className='flex flex-col'>
-                <h3 className='font-semibold text-destructive border-b pb-1 mb-4'>
+                <h3 className='text-sm font-bold text-destructive border-b pb-1 mb-4'>
                   Delete Room
                 </h3>
                 <p className='mb-3 text-sm text-pretty'>

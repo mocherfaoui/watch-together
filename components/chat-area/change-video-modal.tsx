@@ -34,9 +34,9 @@ const ChangeVideoModal = ({
       <Drawer open={isOpen} onOpenChange={setIsOpen} direction='bottom'>
         <DrawerContent className='max-h-[85svh] pb-[max(1rem,env(safe-area-inset-bottom))]'>
           <DrawerHeader>
-            <DrawerTitle className='text-lg'>{CHANGE_VIDEO_TITLE}</DrawerTitle>
+            <DrawerTitle>{CHANGE_VIDEO_TITLE}</DrawerTitle>
           </DrawerHeader>
-          <div className='overflow-y-auto px-4 pb-4'>
+          <div className='overflow-y-auto p-4'>
             <ChangeVideoForm
               defaultVideoUrl={defaultVideoUrl}
               onUrlSubmit={(url) => {
