@@ -26,7 +26,6 @@ export default function ChatArea({
   headerActions?: ReactNode
 }) {
   const messagesRef = useRef<HTMLDivElement>(null)
-  const messagesBottom = useRef<HTMLDivElement>(null)
 
   const { subscribeToNewMessages } = useRoomMessages()
 
@@ -63,14 +62,17 @@ export default function ChatArea({
               ref={messagesRef}
               className='absolute top-0 left-0 h-full w-full flex flex-col-reverse overflow-y-auto px-3'
             >
-              <div className='flex flex-col gap-1 pt-1'>
+              <div className='flex flex-col gap-1 py-3'>
                 {messages?.map((message) => {
                   const isPlaybackMessage =
                     message.content === PLAYBACK_MESSAGE.played ||
                     message.content === PLAYBACK_MESSAGE.paused
 
                   return (
-                    <div key={message.id} className='text-sm text-pretty h-full inline-flex items-baseline'>
+                    <div
+                      key={message.id}
+                      className='text-sm text-pretty h-full inline-flex items-baseline'
+                    >
                       <MessageTimestamp timestamp={message.sent_at} />
                       <div className='h-full inline-block'>
                         <span className='inline-flex items-baseline mr-1'>
@@ -96,7 +98,6 @@ export default function ChatArea({
                     </div>
                   )
                 })}
-                <div ref={messagesBottom}></div>
               </div>
             </div>
           </div>
