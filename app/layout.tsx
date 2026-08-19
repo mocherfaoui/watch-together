@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Script from "next/script";
+import { lucidaGrande } from "@/fonts";
 
 export const metadata: Metadata = {
   title: "Watch Together",
@@ -13,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={lucidaGrande.variable}>
       <body className="h-dvh">
         {process.env.ACTIVATE_ANALYTICS === '1' && (
           <Script

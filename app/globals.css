@@ -9,8 +9,8 @@
 @custom-variant group-hocus (.group:hover &, .group:focus-visible &);
 
 @theme {
-  --font-sans: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma,
-    Verdana, sans-serif;
+  --font-sans: var(--font-lucida-grande), "Lucida Grande",
+    "Lucida Sans Unicode", "Lucida Sans", Tahoma, Verdana, sans-serif;
   --font-mono: Monaco, Menlo, "Courier New", monospace;
 
   --text-xs: 11px;
